@@ -25,7 +25,7 @@ create table builds (
 create table test_reports (
     test_report_id int(11) not null auto_increment,
     name varchar(2048) not null,
-    error mediumtext null,
+    error text null,
     reason varchar(64) not null,
     created_date datetime not null,
     started_date datetime not null,
