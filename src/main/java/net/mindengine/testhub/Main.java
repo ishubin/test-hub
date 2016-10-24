@@ -18,6 +18,9 @@ package net.mindengine.testhub;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 import com.mysql.cj.jdbc.MysqlDataSource;
+import net.mindengine.testhub.controllers.ProjectApiController;
+import net.mindengine.testhub.repository.projects.ProjectRepository;
+import net.mindengine.testhub.repository.projects.JdbcProjectRepository;
 import org.flywaydb.core.Flyway;
 
 import java.sql.SQLException;
@@ -43,5 +46,8 @@ public class Main {
         config.setPassword("root123");
         BoneCP connectionPool = new BoneCP(config);
 
+
+        ProjectRepository projectRepository = new JdbcProjectRepository(connectionPool);
+        new ProjectApiController(projectRepository);
     }
 }

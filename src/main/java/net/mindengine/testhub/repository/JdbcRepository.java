@@ -19,7 +19,7 @@ import com.jolbox.bonecp.BoneCP;
 
 import java.sql.*;
 
-class JdbcRepository {
+public class JdbcRepository {
     private final BoneCP connectionPool;
 
     interface StatementConsumer<R> {
@@ -30,11 +30,11 @@ class JdbcRepository {
         R accept(Statement statement, ResultSet resultSet) throws SQLException;
     }
 
-    JdbcRepository(BoneCP dataSource) {
+    public JdbcRepository(BoneCP dataSource) {
         this.connectionPool = dataSource;
     }
 
-    ResultSetMapper query(String sql, Object... args) {
+    public ResultSetMapper query(String sql, Object... args) {
         try {
             Connection connection = connectionPool.getConnection();
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -71,7 +71,7 @@ class JdbcRepository {
         }
     }
 
-    long insert(String sql, Object... args) {
+    public long insert(String sql, Object... args) {
        return executeStatement(sql, args, (statement) -> {
             ResultSet rsKeys = statement.getGeneratedKeys();
             if (rsKeys.next()) {
