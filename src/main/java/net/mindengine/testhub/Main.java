@@ -15,14 +15,9 @@
 ******************************************************************************/
 package net.mindengine.testhub;
 
-import com.galenframework.storage.controllers.api.PageApiController;
-import com.galenframework.storage.controllers.api.ProjectApiController;
-import com.galenframework.storage.repository.*;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 import com.mysql.cj.jdbc.MysqlDataSource;
-import net.mindengine.testhub.repository.files.FileStorage;
-import net.mindengine.testhub.repository.files.LocalFileStorage;
 import org.flywaydb.core.Flyway;
 
 import java.sql.SQLException;
@@ -31,7 +26,7 @@ import java.sql.SQLException;
 public class Main {
 
     public static void main(String[] args) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException {
-        String jdbcUrl = "jdbc:mysql://localhost/galen_storage?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+        String jdbcUrl = "jdbc:mysql://localhost/test_hub?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
         Class.forName("com.mysql.jdbc.Driver").newInstance();
         MysqlDataSource dataSource = new MysqlDataSource();
         dataSource.setUrl(jdbcUrl);
@@ -48,12 +43,5 @@ public class Main {
         config.setPassword("root123");
         BoneCP connectionPool = new BoneCP(config);
 
-        ProjectRepository projectRepository = new JdbcProjectRepository(connectionPool);
-        PageRepository pageRepository = new JdbcPageRepository(connectionPool);
-        ObjectRepository objectRepository = new JdbcObjectRepository(connectionPool);
-        FileStorage fileStorage = new LocalFileStorage("image_storage");
-
-        new ProjectApiController(projectRepository);
-        new PageApiController(projectRepository, pageRepository, objectRepository, fileStorage);
     }
 }

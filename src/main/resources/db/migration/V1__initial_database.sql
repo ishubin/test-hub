@@ -1,3 +1,5 @@
+start transaction;
+
 create table projects (
     project_id int(11) not null auto_increment,
     name varchar(256) not null,
@@ -16,9 +18,9 @@ create table jobs (
 create table builds (
     build_id int(11) not null auto_increment,
     name varchar(256) not null,
-    project_id int(11) not null,
+    job_id int(11) not null,
     created_date datetime not null,
-    unique key(page_id, name),
+    unique key(job_id, name),
     primary key(build_id)
 ) ENGINE=MYISAM;
 
@@ -34,7 +36,7 @@ create table test_reports (
     status enum('passed', 'failed', 'warning', 'skipped') not null,
     report text null,
     hist_statuses varchar(2048) not null,
-    hist_ids varchar(2048) not null
+    hist_ids varchar(2048) not null,
     hist_reasons varchar (2048) not null,
     primary key(test_report_id)
 ) ENGINE=MYISAM;
@@ -56,3 +58,5 @@ create table test_attachments (
     created_date datetime not null,
     primary key(test_attachment_id)
 ) ENGINE=MYISAM;
+
+commit;
