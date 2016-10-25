@@ -20,7 +20,8 @@ import com.jolbox.bonecp.BoneCP;
 import java.sql.*;
 
 public class JdbcRepository {
-    private final BoneCP connectionPool;
+    private final BoneCP masterPool;
+    private final BoneCP slavePool;
 
     interface StatementConsumer<R> {
         R accept(Statement statement) throws SQLException;
@@ -30,13 +31,14 @@ public class JdbcRepository {
         R accept(Statement statement, ResultSet resultSet) throws SQLException;
     }
 
-    public JdbcRepository(BoneCP dataSource) {
-        this.connectionPool = dataSource;
+    public JdbcRepository(BoneCP masterPool, BoneCP slavePool) {
+        this.masterPool = masterPool;
+        this.slavePool = slavePool;
     }
 
     public ResultSetMapper query(String sql, Object... args) {
         try {
-            Connection connection = connectionPool.getConnection();
+            Connection connection = slavePool.getConnection();
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             for (int i = 0; i < args.length; i++) {
@@ -54,7 +56,7 @@ public class JdbcRepository {
 
     private <R> R executeStatement(String sql, Object[] args, StatementConsumer<R> consumer) {
         try {
-            Connection connection = connectionPool.getConnection();
+            Connection connection = masterPool.getConnection();
             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
             for (int i = 0; i < args.length; i++) {

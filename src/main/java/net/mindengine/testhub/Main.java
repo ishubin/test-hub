@@ -30,11 +30,19 @@ public class Main {
 
     public static void main(String[] args) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException {
         String jdbcUrl = "jdbc:mysql://localhost/test_hub?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+        BoneCP masterPool = createBoneCP(jdbcUrl, "root", "root123");
+        BoneCP slavePool = createBoneCP(jdbcUrl, "root", "root123");
+
+        ProjectRepository projectRepository = new JdbcProjectRepository(masterPool, slavePool);
+        new ProjectApiController(projectRepository);
+    }
+
+    private static BoneCP createBoneCP(String jdbcUrl, String user, String password) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException {
         Class.forName("com.mysql.jdbc.Driver").newInstance();
         MysqlDataSource dataSource = new MysqlDataSource();
         dataSource.setUrl(jdbcUrl);
-        dataSource.setUser("root");
-        dataSource.setPassword("root123");
+        dataSource.setUser(user);
+        dataSource.setPassword(password);
 
         Flyway flyway = new Flyway();
         flyway.setDataSource(dataSource);
@@ -42,12 +50,8 @@ public class Main {
 
         BoneCPConfig config = new BoneCPConfig();
         config.setJdbcUrl(jdbcUrl);
-        config.setUsername("root");
-        config.setPassword("root123");
-        BoneCP connectionPool = new BoneCP(config);
-
-
-        ProjectRepository projectRepository = new JdbcProjectRepository(connectionPool);
-        new ProjectApiController(projectRepository);
+        config.setUsername(user);
+        config.setPassword(password);
+        return new BoneCP(config);
     }
 }

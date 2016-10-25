@@ -5,8 +5,8 @@ import net.mindengine.testhub.model.projects.Project;
 import net.mindengine.testhub.repository.JdbcRepository;
 
 public class JdbcProjectRepository extends JdbcRepository implements ProjectRepository {
-    public JdbcProjectRepository(BoneCP connectionPool) {
-        super(connectionPool);
+    public JdbcProjectRepository(BoneCP masterPool, BoneCP slavePool) {
+        super(masterPool, slavePool);
     }
 
     @Override
