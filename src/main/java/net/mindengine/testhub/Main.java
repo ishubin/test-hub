@@ -18,9 +18,14 @@ package net.mindengine.testhub;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 import com.mysql.cj.jdbc.MysqlDataSource;
-import net.mindengine.testhub.controllers.ProjectApiController;
-import net.mindengine.testhub.repository.projects.ProjectRepository;
-import net.mindengine.testhub.repository.projects.JdbcProjectRepository;
+import net.mindengine.testhub.controllers.ProjectsApiController;
+import net.mindengine.testhub.controllers.api.TestsApiController;
+import net.mindengine.testhub.repository.jobs.JdbcJobsRepository;
+import net.mindengine.testhub.repository.jobs.JobsRepository;
+import net.mindengine.testhub.repository.tests.TestsRepository;
+import net.mindengine.testhub.repository.projects.ProjectsRepository;
+import net.mindengine.testhub.repository.projects.JdbcProjectsRepository;
+import net.mindengine.testhub.repository.tests.JdbcTestsRepository;
 import org.flywaydb.core.Flyway;
 
 import java.sql.SQLException;
@@ -33,8 +38,11 @@ public class Main {
         BoneCP masterPool = createBoneCP(jdbcUrl, "root", "root123");
         BoneCP slavePool = createBoneCP(jdbcUrl, "root", "root123");
 
-        ProjectRepository projectRepository = new JdbcProjectRepository(masterPool, slavePool);
-        new ProjectApiController(projectRepository);
+        ProjectsRepository projectRepository = new JdbcProjectsRepository(masterPool, slavePool);
+        TestsRepository testsRepository = new JdbcTestsRepository(masterPool, slavePool);
+        JobsRepository jobsRepository = new JdbcJobsRepository(masterPool, slavePool);
+        new ProjectsApiController(projectRepository);
+        new TestsApiController(jobsRepository, testsRepository);
     }
 
     private static BoneCP createBoneCP(String jdbcUrl, String user, String password) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException {

@@ -26,6 +26,7 @@ create table builds (
 
 create table test_reports (
     test_report_id int(11) not null auto_increment,
+    build_id int(11) not null,
     name varchar(2048) not null,
     error text null,
     reason varchar(64) not null,
@@ -34,6 +35,7 @@ create table test_reports (
     ended_date datetime not null,
     reported_by varchar(128) null,
     status enum('passed', 'failed', 'warning', 'skipped') not null,
+    report_type varchar(32) null,
     report text null,
     hist_statuses varchar(2048) not null,
     hist_ids varchar(2048) not null,

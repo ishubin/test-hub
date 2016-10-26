@@ -73,7 +73,7 @@ public class JdbcRepository {
         }
     }
 
-    public long insert(String sql, Object... args) {
+    public Long insert(String sql, Object... args) {
        return executeStatement(sql, args, (statement) -> {
             ResultSet rsKeys = statement.getGeneratedKeys();
             if (rsKeys.next()) {

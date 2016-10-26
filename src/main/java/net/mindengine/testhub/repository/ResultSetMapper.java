@@ -21,18 +21,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-class ResultSetMapper {
+public class ResultSetMapper {
     private final ResultSet resultSet;
 
     ResultSetMapper(ResultSet resultSet) {
         this.resultSet = resultSet;
     }
 
-    interface RSFunction<T> {
+    public Optional<Long> singleLong() {
+        return single(rs -> rs.getLong(1));
+    }
+
+    public interface RSFunction<T> {
         T apply(ResultSet rs) throws SQLException;
     }
 
-    <T> Optional<T> single(RSFunction<T> mapFunction) {
+    public <T> Optional<T> single(RSFunction<T> mapFunction) {
         try {
             if (resultSet.next()) {
                 return Optional.ofNullable(mapFunction.apply(resultSet));
@@ -43,7 +47,7 @@ class ResultSetMapper {
         return Optional.empty();
     }
 
-    <T> List<T> list(RSFunction<T> mapFunction) {
+    public <T> List<T> list(RSFunction<T> mapFunction) {
         try {
             List<T> list = new LinkedList<T>();
             while (resultSet.next()) {

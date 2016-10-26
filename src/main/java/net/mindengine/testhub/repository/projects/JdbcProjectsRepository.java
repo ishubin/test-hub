@@ -4,8 +4,8 @@ import com.jolbox.bonecp.BoneCP;
 import net.mindengine.testhub.model.projects.Project;
 import net.mindengine.testhub.repository.JdbcRepository;
 
-public class JdbcProjectRepository extends JdbcRepository implements ProjectRepository {
-    public JdbcProjectRepository(BoneCP masterPool, BoneCP slavePool) {
+public class JdbcProjectsRepository extends JdbcRepository implements ProjectsRepository {
+    public JdbcProjectsRepository(BoneCP masterPool, BoneCP slavePool) {
         super(masterPool, slavePool);
     }
 
