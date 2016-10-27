@@ -10,10 +10,10 @@ import static net.mindengine.testhub.controllers.JsonTransformer.toJson;
 import static spark.Spark.post;
 
 public class ApiController {
-    private ObjectMapper mapper = new ObjectMapper();
+    protected ObjectMapper objectMapper = new ObjectMapper();
 
     public <T> T fromJson(Request req, Class<T> clazz) throws IOException {
-        return mapper.readValue(req.body(), clazz);
+        return objectMapper.readValue(req.body(), clazz);
     }
 
     public static void postJson(String path, Route route) {

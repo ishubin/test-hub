@@ -1,5 +1,9 @@
 package net.mindengine.testhub.model.tests;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.TextNode;
+
 import java.util.Date;
 
 public class TestRequest {
@@ -10,11 +14,9 @@ public class TestRequest {
     private String reason;
     private String error;
     private String reportedBy;
-    private String reportType;
-    private String report;
     private Date startedDate;
     private Date endedDate;
-    private TestReport testReport;
+    private TestReportRequest testReport;
 
     public String getJob() {
         return job;
@@ -72,22 +74,6 @@ public class TestRequest {
         this.reportedBy = reportedBy;
     }
 
-    public String getReportType() {
-        return reportType;
-    }
-
-    public void setReportType(String reportType) {
-        this.reportType = reportType;
-    }
-
-    public String getReport() {
-        return report;
-    }
-
-    public void setReport(String report) {
-        this.report = report;
-    }
-
     public Date getStartedDate() {
         return startedDate;
     }
@@ -104,11 +90,34 @@ public class TestRequest {
         this.endedDate = endedDate;
     }
 
-    public TestReport getTestReport() {
+    public TestReportRequest getTestReport() {
         return testReport;
     }
 
-    public void setTestReport(TestReport testReport) {
+    public void setTestReport(TestReportRequest testReport) {
         this.testReport = testReport;
+    }
+
+    public Test asTest(ObjectMapper objectMapper) throws JsonProcessingException {
+        Test test = new Test();
+        test.setName(testName);
+        test.setError(error);
+        test.setReason(reason);
+        test.setStatus(status);
+        test.setReportedBy(reportedBy);
+        test.setStartedDate(startedDate);
+        test.setEndedDate(endedDate);
+
+        if (testReport != null) {
+            test.setReportType(testReport.getReportType());
+            String convertedValue = null;
+            if (testReport.getReport() instanceof TextNode) {
+                convertedValue = testReport.getReport().asText();
+            } else {
+                convertedValue = objectMapper.writeValueAsString(testReport.getReport());
+            }
+            test.setReport(convertedValue);
+        }
+        return test;
     }
 }

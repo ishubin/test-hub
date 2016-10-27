@@ -1,8 +1,10 @@
 package net.mindengine.testhub.model.tests;
 
-public class TestReport {
+import com.fasterxml.jackson.databind.JsonNode;
+
+public class TestReportRequest {
     private String reportType;
-    private String report;
+    private JsonNode report;
 
     public String getReportType() {
         return reportType;
@@ -12,11 +14,11 @@ public class TestReport {
         this.reportType = reportType;
     }
 
-    public String getReport() {
+    public JsonNode getReport() {
         return report;
     }
 
-    public void setReport(String report) {
+    public void setReport(JsonNode report) {
         this.report = report;
     }
 }

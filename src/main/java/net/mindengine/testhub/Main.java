@@ -42,7 +42,7 @@ public class Main {
         TestsRepository testsRepository = new JdbcTestsRepository(masterPool, slavePool);
         JobsRepository jobsRepository = new JdbcJobsRepository(masterPool, slavePool);
         new ProjectsApiController(projectRepository);
-        new TestsApiController(jobsRepository, testsRepository);
+        new TestsApiController(projectRepository, jobsRepository, testsRepository);
     }
 
     private static BoneCP createBoneCP(String jdbcUrl, String user, String password) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException {
