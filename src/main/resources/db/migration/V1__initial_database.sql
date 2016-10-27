@@ -37,9 +37,7 @@ create table test_reports (
     status enum('passed', 'failed', 'warning', 'skipped') not null,
     report_type varchar(32) null,
     report text null,
-    hist_statuses varchar(2048) not null,
-    hist_ids varchar(2048) not null,
-    hist_reasons varchar (2048) not null,
+    aggregated_status_history text null,
     primary key(test_report_id)
 ) ENGINE=MYISAM;
 
