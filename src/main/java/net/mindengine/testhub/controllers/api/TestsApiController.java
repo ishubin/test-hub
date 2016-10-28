@@ -1,15 +1,19 @@
 package net.mindengine.testhub.controllers.api;
 
 import net.mindengine.testhub.model.tests.Test;
+import net.mindengine.testhub.model.tests.TestExtendedStatus;
 import net.mindengine.testhub.model.tests.TestRequest;
 import net.mindengine.testhub.repository.jobs.JobsRepository;
 import net.mindengine.testhub.repository.projects.ProjectsRepository;
 import net.mindengine.testhub.repository.tests.TestsRepository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 public class TestsApiController extends ApiController {
+    public static final int AMOUNT_OF_TESTS = 40;
+
     private final TestsRepository testsRepository;
     private final JobsRepository jobsRepository;
     private final ProjectsRepository projectRepository;
@@ -35,6 +39,9 @@ public class TestsApiController extends ApiController {
             Test test = testRequest.asTest(objectMapper);
             test.setBuildId(buildId);
             test.setCreatedDate(new Date());
+
+            List<TestExtendedStatus> history = testsRepository.findLastTestHistory(jobId, test.getName(), AMOUNT_OF_TESTS);
+            test.setAggregatedStatusHistory(objectMapper.writeValueAsString(history));
             return testsRepository.createTest(test);
         });
     }
