@@ -1,8 +1,10 @@
 package net.mindengine.testhub.repository.jobs;
 
 import com.jolbox.bonecp.BoneCP;
+import net.mindengine.testhub.model.jobs.Job;
 import net.mindengine.testhub.repository.JdbcRepository;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static net.mindengine.testhub.utils.RetryUtils.withRetry;
@@ -44,7 +46,15 @@ public class JdbcJobsRepository extends JdbcRepository implements JobsRepository
 
     @Override
     public Optional<Long> findJobIdByProjectAndName(Long projectId, String jobName) {
-        return query("select job_id from jobs where name = ?", jobName).singleLong();
+        return query("select job_id from jobs where project_id = ? and name = ?", projectId, jobName).singleLong();
+    }
+
+    @Override
+    public List<Job> findAllJobsForProject(Long projectId) {
+        return query("select * from jobs where project_id = ?", projectId)
+            .list(rs ->
+            new Job(rs.getLong("job_id"), rs.getString("name"))
+        );
     }
 
 }

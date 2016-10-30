@@ -18,7 +18,8 @@ package net.mindengine.testhub;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 import com.mysql.cj.jdbc.MysqlDataSource;
-import net.mindengine.testhub.controllers.ProjectsApiController;
+import net.mindengine.testhub.controllers.api.JobsApiController;
+import net.mindengine.testhub.controllers.api.ProjectsApiController;
 import net.mindengine.testhub.controllers.api.TestsApiController;
 import net.mindengine.testhub.repository.jobs.JdbcJobsRepository;
 import net.mindengine.testhub.repository.jobs.JobsRepository;
@@ -41,7 +42,8 @@ public class Main {
         ProjectsRepository projectRepository = new JdbcProjectsRepository(masterPool, slavePool);
         TestsRepository testsRepository = new JdbcTestsRepository(masterPool, slavePool);
         JobsRepository jobsRepository = new JdbcJobsRepository(masterPool, slavePool);
-        new ProjectsApiController(projectRepository);
+        new ProjectsApiController(projectRepository, jobsRepository);
+        new JobsApiController(projectRepository, jobsRepository, testsRepository);
         new TestsApiController(projectRepository, jobsRepository, testsRepository);
     }
 

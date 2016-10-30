@@ -10,21 +10,15 @@ import net.mindengine.testhub.repository.tests.TestsRepository;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Supplier;
 
 import static java.util.stream.Collectors.toList;
 
 public class TestsApiController extends ApiController {
     private static final int MAX_TEST_HISTORY = 40;
-
     private final TestsRepository testsRepository;
-    private final JobsRepository jobsRepository;
-    private final ProjectsRepository projectRepository;
 
     public TestsApiController(ProjectsRepository projectRepository, JobsRepository jobsRepository, TestsRepository testsRepository) {
-        this.projectRepository = projectRepository;
-        this.jobsRepository = jobsRepository;
+        super(projectRepository, jobsRepository);
         this.testsRepository = testsRepository;
         init();
     }
@@ -75,27 +69,4 @@ public class TestsApiController extends ApiController {
             return testsRepository.findTestsByBuild(buildId);
         }
     }
-
-    private Long findMandatoryBuild(Long jobId, String buildName) {
-        return provideMandatoryIdFor("Build", buildName, () -> jobsRepository.findBuildByJobAndName(jobId, buildName));
-    }
-
-    private Long findMandatoryProject(String projectName) {
-        return provideMandatoryIdFor("Project", projectName, () -> projectRepository.findProjectIdByName(projectName));
-    }
-
-    private Long findMandatoryJob(Long projectId, String jobName) {
-        return provideMandatoryIdFor("Job", jobName, () -> jobsRepository.findJobIdByProjectAndName(projectId, jobName));
-    }
-
-
-    private Long provideMandatoryIdFor(String entity, String entityName, Supplier<Optional<Long>> supplier) {
-        Optional<Long> id = supplier.get();
-        if (!id.isPresent()) {
-            throw new RuntimeException(entity + " does not exist: " + entityName);
-        }
-        return id.get();
-    }
-
-
 }
