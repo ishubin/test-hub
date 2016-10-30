@@ -1,5 +1,6 @@
 package net.mindengine.testhub.repository.jobs;
 
+import net.mindengine.testhub.model.builds.Build;
 import net.mindengine.testhub.model.jobs.Job;
 
 import java.util.List;
@@ -15,4 +16,8 @@ public interface JobsRepository {
     Optional<Long> findJobIdByProjectAndName(Long projectId, String jobName);
 
     List<Job> findAllJobsForProject(Long projectId);
+
+    Optional<Job> findJobByProjectAndName(Long projectId, String jobName);
+
+    List<Build> findLatestBuildsForJob(Long jobId, int amountOfBuilds);
 }
