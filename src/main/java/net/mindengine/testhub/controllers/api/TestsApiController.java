@@ -1,8 +1,9 @@
 package net.mindengine.testhub.controllers.api;
 
 import net.mindengine.testhub.model.tests.Test;
-import net.mindengine.testhub.model.tests.TestExtendedStatus;
+import net.mindengine.testhub.model.tests.TestHistory;
 import net.mindengine.testhub.model.tests.TestRequest;
+import net.mindengine.testhub.model.tests.TestResponse;
 import net.mindengine.testhub.repository.jobs.JobsRepository;
 import net.mindengine.testhub.repository.projects.ProjectsRepository;
 import net.mindengine.testhub.repository.tests.TestsRepository;
@@ -10,9 +11,12 @@ import net.mindengine.testhub.repository.tests.TestsRepository;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
+
+import static java.util.stream.Collectors.toList;
 
 public class TestsApiController extends ApiController {
-    public static final int AMOUNT_OF_TESTS = 40;
+    private static final int MAX_TEST_HISTORY = 40;
 
     private final TestsRepository testsRepository;
     private final JobsRepository jobsRepository;
@@ -28,22 +32,69 @@ public class TestsApiController extends ApiController {
     private void init() {
         postJson("/api/projects/:project/tests", (req, res) -> {
             String project = req.params("project");
-            Optional<Long> projectId = projectRepository.findProjectIdByName(project);
-            if (!projectId.isPresent()) {
-                throw new RuntimeException("Project does not exist: " + project);
-            }
-
+            Long projectId = findMandatoryProject(project);
             TestRequest testRequest = fromJson(req, TestRequest.class);
-            Long jobId = jobsRepository.createJob(projectId.get(), testRequest.getJob());
+            Long jobId = jobsRepository.createJob(projectId, testRequest.getJob());
             Long buildId = jobsRepository.createBuild(jobId, testRequest.getBuild());
             Test test = testRequest.asTest(objectMapper);
             test.setBuildId(buildId);
             test.setCreatedDate(new Date());
 
-            List<TestExtendedStatus> history = testsRepository.findLastTestHistory(jobId, test.getName(), AMOUNT_OF_TESTS);
-            test.setAggregatedStatusHistory(objectMapper.writeValueAsString(history));
+            List<TestHistory> testHistory = testsRepository.findLastTestHistory(jobId, test.getName(), MAX_TEST_HISTORY);
+            test.setAggregatedStatusHistory(objectMapper.writeValueAsString(testHistory));
+
             return testsRepository.createTest(test);
         });
+
+
+        getJson("/api/projects/:project/jobs/:job/builds/:build/tests", (req, res) -> {
+            String projectName = req.params("project");
+            String jobName = req.params("job");
+            String buildName = req.params("build");
+            String statusFilter = req.queryParams("status");
+
+            Long projectId = findMandatoryProject(projectName);
+            Long jobId = findMandatoryJob(projectId, jobName);
+            Long buildId = findMandatoryBuild(jobId, buildName);
+
+            return findTestsWithStatus(buildId, statusFilter)
+                .stream()
+                .map(t -> toTestResponse(jobName, buildName, t)).collect(toList());
+        });
+
+    }
+
+    private TestResponse toTestResponse(String jobName, String buildName, Test test) {
+        return TestResponse.from(jobName, buildName, test, objectMapper);
+    }
+
+    private List<Test> findTestsWithStatus(Long buildId, String statusFilter) {
+        if (statusFilter != null) {
+            return testsRepository.findTestsByBuildAndStatus(buildId, statusFilter);
+        } else {
+            return testsRepository.findTestsByBuild(buildId);
+        }
+    }
+
+    private Long findMandatoryBuild(Long jobId, String buildName) {
+        return provideMandatoryIdFor("Build", buildName, () -> jobsRepository.findBuildByJobAndName(jobId, buildName));
+    }
+
+    private Long findMandatoryProject(String projectName) {
+        return provideMandatoryIdFor("Project", projectName, () -> projectRepository.findProjectIdByName(projectName));
+    }
+
+    private Long findMandatoryJob(Long projectId, String jobName) {
+        return provideMandatoryIdFor("Job", jobName, () -> jobsRepository.findJobIdByProjectAndName(projectId, jobName));
+    }
+
+
+    private Long provideMandatoryIdFor(String entity, String entityName, Supplier<Optional<Long>> supplier) {
+        Optional<Long> id = supplier.get();
+        if (!id.isPresent()) {
+            throw new RuntimeException(entity + " does not exist: " + entityName);
+        }
+        return id.get();
     }
 
 

@@ -16,7 +16,7 @@ public class JdbcJobsRepository extends JdbcRepository implements JobsRepository
     @Override
     public Long createJob(Long projectId, String jobName) {
         return withRetry(() -> {
-            Optional<Long> jobId = query("select job_id from jobs where name = ?", jobName).singleLong();
+            Optional<Long> jobId = findJobIdByProjectAndName(projectId, jobName);
             if (jobId.isPresent()) {
                 return jobId.get();
             } else {
@@ -28,13 +28,23 @@ public class JdbcJobsRepository extends JdbcRepository implements JobsRepository
     @Override
     public Long createBuild(Long jobId, String buildName) {
         return withRetry(() -> {
-           Optional<Long> buildId = query("select build_id from builds where job_id = ? and name = ?", jobId, buildName).singleLong();
+           Optional<Long> buildId = findBuildByJobAndName(jobId, buildName);
             if (buildId.isPresent()) {
                 return buildId.get();
             } else {
                 return insert("insert into builds (job_id, name, created_date) values (?, ?, ?)", jobId, buildName, new Date());
             }
         });
+    }
+
+    @Override
+    public Optional<Long> findBuildByJobAndName(Long jobId, String buildName) {
+        return query("select build_id from builds where job_id = ? and name = ?", jobId, buildName).singleLong();
+    }
+
+    @Override
+    public Optional<Long> findJobIdByProjectAndName(Long projectId, String jobName) {
+        return query("select job_id from jobs where name = ?", jobName).singleLong();
     }
 
 }

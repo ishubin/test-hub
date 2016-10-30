@@ -2,7 +2,7 @@ package net.mindengine.testhub.repository.tests;
 
 
 import net.mindengine.testhub.model.tests.Test;
-import net.mindengine.testhub.model.tests.TestExtendedStatus;
+import net.mindengine.testhub.model.tests.TestHistory;
 
 import java.util.List;
 
@@ -10,6 +10,9 @@ public interface TestsRepository {
 
     Long createTest(Test test);
 
+    List<Test> findTestsByBuildAndStatus(Long buildId, String statusFilter);
 
-    List<TestExtendedStatus> findLastTestHistory(Long jobId, String name, int amountOfTests);
+    List<Test> findTestsByBuild(Long buildId);
+
+    List<TestHistory> findLastTestHistory(Long jobId, String name, int maxTestHistory);
 }

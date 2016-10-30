@@ -7,6 +7,7 @@ import spark.Route;
 import java.io.IOException;
 
 import static net.mindengine.testhub.controllers.JsonTransformer.toJson;
+import static spark.Spark.get;
 import static spark.Spark.post;
 
 public class ApiController {
@@ -18,6 +19,10 @@ public class ApiController {
 
     public static void postJson(String path, Route route) {
         post(path, route, toJson());
+    }
+
+    public static void getJson(String path, Route route) {
+        get(path, route, toJson());
     }
 
 }
