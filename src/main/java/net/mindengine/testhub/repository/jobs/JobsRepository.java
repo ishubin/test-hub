@@ -11,7 +11,9 @@ public interface JobsRepository {
 
     Long createBuild(Long jobId, String buildName);
 
-    Optional<Long> findBuildByJobAndName(Long jobId, String buildName);
+    Optional<Long> findBuildIdByJobAndName(Long jobId, String buildName);
+
+    Optional<Build> findBuildByJobAndName(Long jobId, String buildName);
 
     Optional<Long> findJobIdByProjectAndName(Long projectId, String jobName);
 

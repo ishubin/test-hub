@@ -38,7 +38,7 @@ public class ApiController {
     }
 
     protected Long findMandatoryBuild(Long jobId, String buildName) {
-        return provideMandatoryIdFor("Build", buildName, () -> jobsRepository.findBuildByJobAndName(jobId, buildName));
+        return provideMandatoryIdFor("Build", buildName, () -> jobsRepository.findBuildIdByJobAndName(jobId, buildName));
     }
 
     protected Long findMandatoryProject(String projectName) {

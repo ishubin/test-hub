@@ -1,5 +1,6 @@
 package net.mindengine.testhub.controllers.api;
 
+import net.mindengine.testhub.model.builds.Build;
 import net.mindengine.testhub.model.builds.BuildResponse;
 import net.mindengine.testhub.model.jobs.Job;
 import net.mindengine.testhub.model.jobs.JobResponse;
@@ -49,6 +50,17 @@ public class JobsApiController extends ApiController {
             return jobsRepository.findLatestBuildsForJob(jobId, AMOUNT_OF_BUILDS).stream()
                 .map(b -> new BuildResponse(b.getName()))
                 .collect(toList());
+        });
+
+        getJson("/api/projects/:project/jobs/:jobName/builds/:buildName", (req, res) -> {
+            Long projectId = findMandatoryProject(req.params("project"));
+            Long jobId = findMandatoryJob(projectId, req.params("jobName"));
+            String buildName = req.params("buildName");
+            Optional<Build> build = jobsRepository.findBuildByJobAndName(jobId, buildName);
+            if (!build.isPresent()) {
+                throw new RuntimeException("Build does not exist: " + buildName);
+            }
+            return build.get();
         });
     }
 

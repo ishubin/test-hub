@@ -38,7 +38,7 @@ public class JdbcJobsRepository extends JdbcRepository implements JobsRepository
     @Override
     public Long createBuild(Long jobId, String buildName) {
         return withRetry(() -> {
-           Optional<Long> buildId = findBuildByJobAndName(jobId, buildName);
+           Optional<Long> buildId = findBuildIdByJobAndName(jobId, buildName);
             if (buildId.isPresent()) {
                 return buildId.get();
             } else {
@@ -48,8 +48,13 @@ public class JdbcJobsRepository extends JdbcRepository implements JobsRepository
     }
 
     @Override
-    public Optional<Long> findBuildByJobAndName(Long jobId, String buildName) {
+    public Optional<Long> findBuildIdByJobAndName(Long jobId, String buildName) {
         return query("select build_id from builds where job_id = ? and name = ? limit 0, 1", jobId, buildName).singleLong();
+    }
+
+    @Override
+    public Optional<Build> findBuildByJobAndName(Long jobId, String buildName) {
+        return query("select * from builds where job_id = ? and name = ? limit 0, 1", jobId, buildName).single(buildReader);
     }
 
     @Override
