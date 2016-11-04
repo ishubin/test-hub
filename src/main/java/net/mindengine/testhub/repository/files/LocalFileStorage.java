@@ -34,7 +34,13 @@ public class LocalFileStorage implements FileStorage {
     public LocalFileStorage(String storagePath) {
         root = new File(storagePath);
         if (!root.exists()) {
-            root.mkdirs();
+            if (!root.mkdirs()) {
+                throw new RuntimeException("Couldn't create storage directory: " + storagePath);
+            }
+        }
+
+        if (!root.isDirectory()) {
+            throw new RuntimeException("Not a directory: " + storagePath);
         }
     }
 
@@ -79,6 +85,11 @@ public class LocalFileStorage implements FileStorage {
         } catch (Exception ex) {
             throw new RuntimeException("Cannot save image to storage", ex);
         }
+    }
+
+    @Override
+    public String getStorageType() {
+        return "local";
     }
 
     public String generateImageDirsPath() {

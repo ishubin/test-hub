@@ -1,8 +1,11 @@
 package net.mindengine.testhub.repository.tests;
 
 import com.jolbox.bonecp.BoneCP;
+import javafx.util.Pair;
 import net.mindengine.testhub.model.tests.Test;
 import net.mindengine.testhub.model.tests.TestHistory;
+import net.mindengine.testhub.model.tests.TestStatistics;
+import net.mindengine.testhub.model.tests.TestStatus;
 import net.mindengine.testhub.repository.JdbcRepository;
 import net.mindengine.testhub.repository.ResultSetMapper;
 import java.util.List;
@@ -12,7 +15,7 @@ public class JdbcTestsRepository extends JdbcRepository implements TestsReposito
         Test test = new Test();
         test.setTestId(rs.getLong("test_report_id"));
         test.setName(rs.getString("name"));
-        test.setStatus(rs.getString("status"));
+        test.setStatus(TestStatus.valueOf(rs.getString("status")));
         test.setReason(rs.getString("reason"));
         test.setError(rs.getString("error"));
         test.setReportedBy(rs.getString("reported_by"));
@@ -39,7 +42,7 @@ public class JdbcTestsRepository extends JdbcRepository implements TestsReposito
             test.getName(),
             test.getError(),
             test.getReason(),
-            test.getStatus(),
+            test.getStatus().name(),
             test.getCreatedDate(),
             test.getStartedDate(),
             test.getEndedDate(),
@@ -72,5 +75,23 @@ public class JdbcTestsRepository extends JdbcRepository implements TestsReposito
             rs.getString("status"),
             rs.getString("reason")
         ));
+    }
+
+    @Override
+    public TestStatistics countTestStatisticsForBuild(Long buildId) {
+        List<Pair<TestStatus, Long>> list = query("select status, count(*) as cnt from test_reports where build_id = ? group by status", buildId).list(rs ->
+            new Pair<>(TestStatus.valueOf(rs.getString("status")), rs.getLong("cnt"))
+        );
+
+        TestStatistics statistics = new TestStatistics();
+        list.stream().forEach(s -> {
+            switch (s.getKey()) {
+                case passed: {statistics.setPassed(s.getValue()); break;}
+                case failed: {statistics.setFailed(s.getValue()); break;}
+                case skipped: {statistics.setSkipped(s.getValue()); break;}
+
+            }
+        });
+        return statistics;
     }
 }

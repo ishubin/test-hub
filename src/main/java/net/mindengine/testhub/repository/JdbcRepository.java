@@ -84,4 +84,11 @@ public class JdbcRepository {
        });
     }
 
+    public void update(String sql, Object... args) {
+        executeStatement(sql, args, (statement) -> {
+            statement.getGeneratedKeys();
+            return null;
+        });
+    }
+
 }

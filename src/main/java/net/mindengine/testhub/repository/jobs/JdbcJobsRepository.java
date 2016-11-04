@@ -3,6 +3,7 @@ package net.mindengine.testhub.repository.jobs;
 import com.jolbox.bonecp.BoneCP;
 import net.mindengine.testhub.model.builds.Build;
 import net.mindengine.testhub.model.jobs.Job;
+import net.mindengine.testhub.model.tests.TestStatistics;
 import net.mindengine.testhub.repository.JdbcRepository;
 import net.mindengine.testhub.repository.ResultSetMapper;
 
@@ -24,13 +25,13 @@ public class JdbcJobsRepository extends JdbcRepository implements JobsRepository
     }
 
     @Override
-    public Long createJob(Long projectId, String jobName) {
+    public Long createJob(Job job) {
         return withRetry(() -> {
-            Optional<Long> jobId = findJobIdByProjectAndName(projectId, jobName);
+            Optional<Long> jobId = findJobIdByProjectAndName(job.getProjectId(), job.getName());
             if (jobId.isPresent()) {
                 return jobId.get();
             } else {
-                return insert("insert into jobs (project_id, name) values (?, ?)", projectId, jobName);
+                return insert("insert into jobs (project_id, name) values (?, ?)", job.getProjectId(), job.getName());
             }
         });
     }
@@ -42,7 +43,8 @@ public class JdbcJobsRepository extends JdbcRepository implements JobsRepository
             if (buildId.isPresent()) {
                 return buildId.get();
             } else {
-                return insert("insert into builds (job_id, name, created_date) values (?, ?, ?)", jobId, buildName, new Date());
+                return insert("insert into builds (job_id, name, created_date, status) values (?, ?, ?, 'passed')",
+                    jobId, buildName, new Date());
             }
         });
     }
@@ -78,6 +80,19 @@ public class JdbcJobsRepository extends JdbcRepository implements JobsRepository
     public List<Build> findLatestBuildsForJob(Long jobId, int amountOfBuilds) {
         return query("select * from builds where job_id = ? limit 0, ?", jobId, amountOfBuilds)
             .list(buildReader);
+    }
+
+    @Override
+    public void updateTestStatistics(Long buildId, TestStatistics testStatistics) {
+        update("update builds set " +
+            "aggr_cnt_tests_passed = ?, " +
+            "aggr_cnt_tests_failed = ?, " +
+            "aggr_cnt_tests_skipped = ? " +
+            "where build_id = ?",
+            testStatistics.getPassed(),
+            testStatistics.getFailed(),
+            testStatistics.getSkipped(),
+            buildId);
     }
 
 }

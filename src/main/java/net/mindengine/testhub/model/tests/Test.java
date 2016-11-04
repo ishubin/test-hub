@@ -6,7 +6,7 @@ public class Test {
     private Long testId;
     private Long buildId;
     private String name;
-    private String status;
+    private TestStatus status;
     private String reason;
     private String error;
     private String reportedBy;
@@ -33,11 +33,11 @@ public class Test {
         this.name = name;
     }
 
-    public String getStatus() {
+    public TestStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TestStatus status) {
         this.status = status;
     }
 

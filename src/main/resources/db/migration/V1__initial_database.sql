@@ -19,6 +19,11 @@ create table builds (
     build_id int(11) not null auto_increment,
     name varchar(256) not null,
     job_id int(11) not null,
+    status enum('passed', 'failed') not null,
+    aggr_cnt_tests_failed int(11) not null DEFAULT 0,
+    aggr_cnt_tests_passed int(11) not null DEFAULT 0,
+    aggr_cnt_tests_warning int(11) not null DEFAULT 0,
+    aggr_cnt_tests_skipped int(11) not null DEFAULT 0,
     created_date datetime not null,
     unique key(job_id, name),
     primary key(build_id)
@@ -34,7 +39,7 @@ create table test_reports (
     started_date datetime null,
     ended_date datetime null,
     reported_by varchar(128) null,
-    status enum('passed', 'failed', 'warning', 'skipped') not null,
+    status enum('passed', 'failed', 'skipped') not null,
     report_type varchar(32) null,
     report text null,
     aggregated_status_history text null,
@@ -44,6 +49,7 @@ create table test_reports (
 create table files (
     file_id int(11) not null auto_increment,
     name varchar(128) not null,
+    storage_type varchar(32) not null,
     image_path varchar(2048) not null,
     created_date datetime not null,
     hash varchar(128) not null,

@@ -18,9 +18,17 @@ package net.mindengine.testhub;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 import com.mysql.cj.jdbc.MysqlDataSource;
+import net.mindengine.testhub.controllers.api.FileApiController;
 import net.mindengine.testhub.controllers.api.JobsApiController;
 import net.mindengine.testhub.controllers.api.ProjectsApiController;
 import net.mindengine.testhub.controllers.api.TestsApiController;
+import net.mindengine.testhub.controllers.jobs.JobsController;
+import net.mindengine.testhub.repository.RepositoryProvider;
+import net.mindengine.testhub.repository.SimpleRepositoryProvider;
+import net.mindengine.testhub.repository.files.FileStorage;
+import net.mindengine.testhub.repository.files.FilesRepository;
+import net.mindengine.testhub.repository.files.JdbcFilesRepository;
+import net.mindengine.testhub.repository.files.LocalFileStorage;
 import net.mindengine.testhub.repository.jobs.JdbcJobsRepository;
 import net.mindengine.testhub.repository.jobs.JobsRepository;
 import net.mindengine.testhub.repository.tests.TestsRepository;
@@ -31,6 +39,9 @@ import org.flywaydb.core.Flyway;
 
 import java.sql.SQLException;
 
+import static spark.Spark.externalStaticFileLocation;
+import static spark.Spark.staticFileLocation;
+
 
 public class Main {
 
@@ -39,12 +50,23 @@ public class Main {
         BoneCP masterPool = createBoneCP(jdbcUrl, "root", "root123");
         BoneCP slavePool = createBoneCP(jdbcUrl, "root", "root123");
 
+        String fileStoragePath = "/opt/test-hub-storage";
+        staticFileLocation("/public");
+        externalStaticFileLocation(fileStoragePath);
+
+        FileStorage fileStorage = new LocalFileStorage(fileStoragePath);
+
         ProjectsRepository projectRepository = new JdbcProjectsRepository(masterPool, slavePool);
         TestsRepository testsRepository = new JdbcTestsRepository(masterPool, slavePool);
         JobsRepository jobsRepository = new JdbcJobsRepository(masterPool, slavePool);
-        new ProjectsApiController(projectRepository, jobsRepository);
-        new JobsApiController(projectRepository, jobsRepository, testsRepository);
-        new TestsApiController(projectRepository, jobsRepository, testsRepository);
+        FilesRepository filesRepository = new JdbcFilesRepository(masterPool, slavePool);
+        RepositoryProvider repositoryProvider = new SimpleRepositoryProvider(projectRepository, jobsRepository, testsRepository, filesRepository);
+        new ProjectsApiController(repositoryProvider);
+        new JobsApiController(repositoryProvider);
+        new TestsApiController(repositoryProvider);
+        new FileApiController(repositoryProvider, fileStorage);
+        new JobsController(repositoryProvider);
+
     }
 
     private static BoneCP createBoneCP(String jdbcUrl, String user, String password) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException {

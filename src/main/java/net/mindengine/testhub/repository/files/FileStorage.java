@@ -24,4 +24,6 @@ public interface FileStorage {
     byte[] readFile(String imagePath);
 
     FileInfo saveImageToStorage(InputStream inputStream);
+
+    String getStorageType();
 }
