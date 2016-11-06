@@ -18,7 +18,14 @@ public class JdbcJobsRepository extends JdbcRepository implements JobsRepository
     private ResultSetMapper.RSFunction<Job> jobReader = (rs) ->
         new Job(rs.getLong("job_id"), rs.getString("name"));
     private ResultSetMapper.RSFunction<Build> buildReader = (rs) ->
-        new Build(rs.getLong("build_id"), rs.getLong("job_id"), rs.getString("name"));
+        new Build(
+            rs.getLong("build_id"),
+            rs.getLong("job_id"),
+            rs.getString("name"),
+            rs.getLong("aggr_cnt_tests_passed"),
+            rs.getLong("aggr_cnt_tests_failed"),
+            rs.getLong("aggr_cnt_tests_skipped")
+        );
 
     public JdbcJobsRepository(BoneCP masterPool, BoneCP slavePool) {
         super(masterPool, slavePool);

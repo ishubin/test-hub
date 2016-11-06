@@ -1,15 +1,6 @@
 #!/bin/bash
-
 set +e
-
-API=http://localhost:4567/api
-
-post_json() {
-    curl -X POST "$API/$1" -H "Content-Type: application/json" -d "$2"
-}
-
-echo Creating project
-post_json "projects" '{"name": "demo"}'
+. base.sh
 
 echo Posting passed test
 post_json "projects/demo/tests" '{

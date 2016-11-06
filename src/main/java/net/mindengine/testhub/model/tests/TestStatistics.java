@@ -6,6 +6,15 @@ public class TestStatistics {
     private long failed;
     private long skipped;
 
+    public TestStatistics() {
+    }
+
+    public TestStatistics(Long passed, Long failed, Long skipped) {
+        this.passed = passed;
+        this.failed = failed;
+        this.skipped = skipped;
+    }
+
     public void setPassed(long passed) {
         this.passed = passed;
     }

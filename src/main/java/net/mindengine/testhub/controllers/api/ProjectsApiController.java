@@ -1,17 +1,23 @@
 package net.mindengine.testhub.controllers.api;
 
 import net.mindengine.testhub.model.projects.Project;
-import net.mindengine.testhub.repository.RepositoryProvider;
+import net.mindengine.testhub.services.ProjectService;
 
 public class ProjectsApiController extends Controller {
 
-    public ProjectsApiController(RepositoryProvider repositoryProvider) {
-        super(repositoryProvider);
+    private final ProjectService projectService;
+
+    public ProjectsApiController(ProjectService projectService) {
+        this.projectService = projectService;
         init();
     }
 
     private void init() {
-        postJson("/api/projects", (req, res) -> projects().createProject(fromJson(req, Project.class)));
+        postJson("/api/projects", (req, res) -> {
+            Project project = fromJson(req, Project.class);
+            projectService.createProject(project);
+            return project;
+        });
     }
 
 

@@ -60,4 +60,17 @@ nav a.navbar-brand {
 }
 
 
-
+.widget-container .widget {
+    margin: 10px;
+    width: 200px;
+    height: 100px;
+    float: left;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.widget-container:after {
+    content: " ";
+    font-size: 1px;
+    display: block;
+    clear: left;
+}

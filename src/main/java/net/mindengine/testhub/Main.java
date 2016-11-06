@@ -35,8 +35,10 @@ import net.mindengine.testhub.repository.tests.TestsRepository;
 import net.mindengine.testhub.repository.projects.ProjectsRepository;
 import net.mindengine.testhub.repository.projects.JdbcProjectsRepository;
 import net.mindengine.testhub.repository.tests.JdbcTestsRepository;
+import net.mindengine.testhub.services.*;
 import org.flywaydb.core.Flyway;
 
+import java.io.File;
 import java.sql.SQLException;
 
 import static spark.Spark.externalStaticFileLocation;
@@ -50,7 +52,7 @@ public class Main {
         BoneCP masterPool = createBoneCP(jdbcUrl, "root", "root123");
         BoneCP slavePool = createBoneCP(jdbcUrl, "root", "root123");
 
-        String fileStoragePath = "/opt/test-hub-storage";
+        String fileStoragePath = createStorageInDir("/opt/test-hub-storage");
         staticFileLocation("/public");
         externalStaticFileLocation(fileStoragePath);
 
@@ -61,12 +63,30 @@ public class Main {
         JobsRepository jobsRepository = new JdbcJobsRepository(masterPool, slavePool);
         FilesRepository filesRepository = new JdbcFilesRepository(masterPool, slavePool);
         RepositoryProvider repositoryProvider = new SimpleRepositoryProvider(projectRepository, jobsRepository, testsRepository, filesRepository);
-        new ProjectsApiController(repositoryProvider);
-        new JobsApiController(repositoryProvider);
-        new TestsApiController(repositoryProvider);
-        new FileApiController(repositoryProvider, fileStorage);
-        new JobsController(repositoryProvider);
 
+        ProjectService projectService = new ProjectServiceImpl(repositoryProvider);
+        JobsService jobsService = new JobsServiceImpl(repositoryProvider);
+        TestService testService = new TestServiceImpl(repositoryProvider);
+        FileService fileService = new FileServiceImpl(repositoryProvider);
+
+        new ProjectsApiController(projectService);
+        new JobsApiController(jobsService);
+        new TestsApiController(testService);
+        new FileApiController(fileService, fileStorage);
+        new JobsController(jobsService);
+
+    }
+
+    private static String createStorageInDir(String path) {
+        File storageDir = new File(path + File.separator + "storage");
+        if (!storageDir.exists()) {
+            if (!storageDir.mkdir()) {
+                throw new RuntimeException("Could create directory: " + storageDir.getAbsolutePath());
+            }
+        } else if (!storageDir.isDirectory()) {
+            throw new RuntimeException("Not a directory: " + storageDir.getAbsolutePath());
+        }
+        return storageDir.getAbsolutePath();
     }
 
     private static BoneCP createBoneCP(String jdbcUrl, String user, String password) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException {

@@ -2,22 +2,22 @@ package net.mindengine.testhub.model.files;
 
 public class FileResponse {
     private String path;
-    private Long fileId;
+    private String fileId;
     private String fileName;
     private String hash;
 
-    public FileResponse(Long fileId, String fileName, String path, String hash) {
+    public FileResponse(String fileId, String fileName, String path, String hash) {
         this.fileId = fileId;
         this.fileName = fileName;
         this.path = path;
         this.hash = hash;
     }
 
-    public Long getFileId() {
+    public String getFileId() {
         return fileId;
     }
 
-    public void setFileId(Long fileId) {
+    public void setFileId(String fileId) {
         this.fileId = fileId;
     }
 

@@ -22,7 +22,6 @@ create table builds (
     status enum('passed', 'failed') not null,
     aggr_cnt_tests_failed int(11) not null DEFAULT 0,
     aggr_cnt_tests_passed int(11) not null DEFAULT 0,
-    aggr_cnt_tests_warning int(11) not null DEFAULT 0,
     aggr_cnt_tests_skipped int(11) not null DEFAULT 0,
     created_date datetime not null,
     unique key(job_id, name),

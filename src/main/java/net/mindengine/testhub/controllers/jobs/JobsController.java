@@ -1,16 +1,21 @@
 package net.mindengine.testhub.controllers.jobs;
 
 import net.mindengine.testhub.controllers.api.Controller;
-import net.mindengine.testhub.repository.RepositoryProvider;
+import net.mindengine.testhub.services.JobsService;
 
 public class JobsController extends Controller {
-    public JobsController(RepositoryProvider repositoryProvider) {
-        super(repositoryProvider);
+    private final JobsService jobsService;
+
+    public JobsController(JobsService jobsService) {
+        this.jobsService = jobsService;
         init();
     }
 
     private void init() {
-        getHsTpl("/projects/:project/jobs", "jobs.hbs", (req, model) -> {
+        getHsTpl("/projects/:project/jobs", "jobs", (req, model) -> {
+            model.put("jobs", jobsService.findJobs(req.params("project")));
         });
     }
+
+
 }
