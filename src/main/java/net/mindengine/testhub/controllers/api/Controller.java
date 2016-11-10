@@ -31,15 +31,24 @@ public class Controller {
     }
 
     public static void postJson(String path, Route route) {
-        post(path, route, toJson());
+        post(path, (req, res) -> {
+            res.header("Content-Type", "application/json");
+            return route.handle(req, res);
+        }, toJson());
     }
 
     public static void postJson(String path, String acceptType, Route route) {
-        post(path, acceptType, route, toJson());
+        post(path, acceptType, (req, res) -> {
+            res.header("Content-Type", "application/json");
+            return route.handle(req, res);
+        }, toJson());
     }
 
     public static void getJson(String path, Route route) {
-        get(path, route, toJson());
+        get(path, (req, res) -> {
+            res.header("Content-Type", "application/json");
+            return route.handle(req, res);
+        }, toJson());
     }
 
 
