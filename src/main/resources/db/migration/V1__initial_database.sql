@@ -52,14 +52,15 @@ create table files (
     image_path varchar(2048) not null,
     created_date datetime not null,
     hash varchar(128) not null,
-    media_type varchar(32) not null,
+    media_type varchar(32) null,
     primary key(file_id)
 ) ENGINE=MYISAM;
 
 create table test_attachments (
     test_attachment_id int(11) not null auto_increment,
     test_report_id int(11) not null,
-    file_id int(11) not null,
+    name varchar(128) not null,
+    url varchar (2048) not null,
     created_date datetime not null,
     primary key(test_attachment_id)
 ) ENGINE=MYISAM;

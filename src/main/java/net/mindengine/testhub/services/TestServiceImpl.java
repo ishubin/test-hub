@@ -1,10 +1,12 @@
 package net.mindengine.testhub.services;
 
+import net.mindengine.testhub.model.Attachment;
 import net.mindengine.testhub.model.jobs.Job;
 import net.mindengine.testhub.model.tests.*;
 import net.mindengine.testhub.repository.RepositoryProvider;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,11 +35,23 @@ public class TestServiceImpl extends ServiceImpl implements TestService {
             List<TestHistory> testHistory = tests().findLastTestHistory(jobId, test.getName(), MAX_TEST_HISTORY);
             test.setAggregatedStatusHistory(objectMapper.writeValueAsString(testHistory));
 
-            tests().createTest(test);
+            Long testId = tests().createTest(test);
+
+            List<Attachment> savedAttachments = new LinkedList<>();
+            if (testRequest.getAttachments() != null) {
+                testRequest.getAttachments().stream().forEach(attachment -> {
+                    try {
+                        tests().createTestAttachment(testId, attachment);
+                        savedAttachments.add(attachment);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                });
+            }
 
             updateBuildStatistics(buildId);
 
-            return TestResponse.from(testRequest.getJob(), testRequest.getBuild(), test, objectMapper);
+            return TestResponse.from(testRequest.getJob(), testRequest.getBuild(), test, savedAttachments, objectMapper);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -60,7 +74,7 @@ public class TestServiceImpl extends ServiceImpl implements TestService {
     }
 
     private TestResponse toTestResponse(String jobName, String buildName, Test test) {
-        return TestResponse.from(jobName, buildName, test, objectMapper);
+        return TestResponse.from(jobName, buildName, test, null, objectMapper);
     }
 
     private List<Test> findTestsWithStatus(Long buildId, Optional<String> statusFilter) {

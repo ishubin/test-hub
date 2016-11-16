@@ -52,9 +52,11 @@ public class Main {
         BoneCP masterPool = createBoneCP(jdbcUrl, "root", "root123");
         BoneCP slavePool = createBoneCP(jdbcUrl, "root", "root123");
 
-        String fileStoragePath = createStorageInDir("/opt/test-hub-storage");
+        String externalLocation = makeDirs("/opt/test-hub-storage");
+        String filesResourceName = "files";
+        String fileStoragePath = makeDirs(externalLocation + File.separator + filesResourceName);
         staticFileLocation("/public");
-        externalStaticFileLocation(fileStoragePath);
+        externalStaticFileLocation(externalLocation);
 
         FileStorage fileStorage = new LocalFileStorage(fileStoragePath);
 
@@ -72,21 +74,21 @@ public class Main {
         new ProjectsApiController(projectService);
         new JobsApiController(jobsService);
         new TestsApiController(testService);
-        new FileApiController(fileService, fileStorage);
+        new FileApiController(fileService, fileStorage, filesResourceName);
         new JobsController(jobsService);
 
     }
 
-    private static String createStorageInDir(String path) {
-        File storageDir = new File(path + File.separator + "storage");
-        if (!storageDir.exists()) {
-            if (!storageDir.mkdir()) {
-                throw new RuntimeException("Could create directory: " + storageDir.getAbsolutePath());
+    private static String makeDirs(String path) {
+        File dir = new File(path);
+        if (!dir.exists()) {
+            if (!dir.mkdir()) {
+                throw new RuntimeException("Couldn't create directory: " + dir.getAbsolutePath());
             }
-        } else if (!storageDir.isDirectory()) {
-            throw new RuntimeException("Not a directory: " + storageDir.getAbsolutePath());
+        } else if (!dir.isDirectory()) {
+            throw new RuntimeException("Not a directory: " + dir.getAbsolutePath());
         }
-        return storageDir.getAbsolutePath();
+        return dir.getAbsolutePath();
     }
 
     private static BoneCP createBoneCP(String jdbcUrl, String user, String password) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException {

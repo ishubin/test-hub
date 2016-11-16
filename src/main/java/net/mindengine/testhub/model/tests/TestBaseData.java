@@ -1,6 +1,9 @@
 package net.mindengine.testhub.model.tests;
 
+import net.mindengine.testhub.model.Attachment;
+
 import java.util.Date;
+import java.util.List;
 
 public class TestBaseData {
     private String job;
@@ -12,6 +15,7 @@ public class TestBaseData {
     private String reportedBy;
     private Date startedDate;
     private Date endedDate;
+    private List<Attachment> attachments;
 
     public String getJob() {
         return job;
@@ -83,5 +87,13 @@ public class TestBaseData {
 
     public void setEndedDate(Date endedDate) {
         this.endedDate = endedDate;
+    }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
     }
 }

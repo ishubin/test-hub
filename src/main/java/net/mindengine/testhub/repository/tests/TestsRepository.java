@@ -1,6 +1,7 @@
 package net.mindengine.testhub.repository.tests;
 
 
+import net.mindengine.testhub.model.Attachment;
 import net.mindengine.testhub.model.tests.Test;
 import net.mindengine.testhub.model.tests.TestHistory;
 import net.mindengine.testhub.model.tests.TestStatistics;
@@ -18,4 +19,6 @@ public interface TestsRepository {
     List<TestHistory> findLastTestHistory(Long jobId, String name, int maxTestHistory);
 
     TestStatistics countTestStatisticsForBuild(Long buildId);
+
+    void createTestAttachment(Long testId, Attachment attachment);
 }

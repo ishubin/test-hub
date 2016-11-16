@@ -18,7 +18,6 @@ public class TestsApiController extends Controller {
             testService.createTest(req.params("project"), fromJson(req, TestRequest.class))
         );
 
-
         getJson("/api/projects/:project/jobs/:job/builds/:build/tests", (req, res) -> testService.findTests(
             req.params("project"),
             req.params("job"),

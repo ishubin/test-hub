@@ -16,10 +16,12 @@ import java.io.IOException;
 public class FileApiController extends Controller {
     private final FileStorage fileStorage;
     private final FileService fileService;
+    private final String filesResourceName;
 
-    public FileApiController(FileService fileService, FileStorage fileStorage) {
+    public FileApiController(FileService fileService, FileStorage fileStorage, String filesResourceName) {
         this.fileService = fileService;
         this.fileStorage = fileStorage;
+        this.filesResourceName = filesResourceName;
         init();
     }
 
@@ -28,8 +30,12 @@ public class FileApiController extends Controller {
             String fileName = req.queryParams("name");
             String mediaType = req.queryParams("mediaType");
             FileInfo fileInfo = copyImageToStorage(req);
-            return fileService.createFile(fileName, fileStorage.getStorageType(), fileInfo.getPath(), mediaType, fileInfo.getHash());
+            return fileService.createFile(fileName, fileStorage.getStorageType(), convertToPublicPath(fileInfo.getPath()), mediaType, fileInfo.getHash());
         });
+    }
+
+    private String convertToPublicPath(String path) {
+        return "/"  + filesResourceName + "/" + path.replace("\\", "/");
     }
 
 

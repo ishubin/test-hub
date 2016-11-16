@@ -2,6 +2,7 @@ package net.mindengine.testhub.repository.tests;
 
 import com.jolbox.bonecp.BoneCP;
 import javafx.util.Pair;
+import net.mindengine.testhub.model.Attachment;
 import net.mindengine.testhub.model.tests.Test;
 import net.mindengine.testhub.model.tests.TestHistory;
 import net.mindengine.testhub.model.tests.TestStatistics;
@@ -93,5 +94,11 @@ public class JdbcTestsRepository extends JdbcRepository implements TestsReposito
             }
         });
         return statistics;
+    }
+
+    @Override
+    public void createTestAttachment(Long testId, Attachment attachment) {
+        insert("insert into test_attachments (test_report_id, name, url, created_date) values (?, ?, ?)",
+            testId, attachment.getName(), attachment.getUrl());
     }
 }

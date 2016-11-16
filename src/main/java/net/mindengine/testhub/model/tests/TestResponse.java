@@ -1,13 +1,16 @@
 package net.mindengine.testhub.model.tests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.mindengine.testhub.model.Attachment;
+
+import java.util.List;
 
 public class TestResponse extends TestBaseData {
 
     private TestReport testReport;
     private TestHistory[] testHistory;
 
-    public static TestResponse from(String job, String build, Test test, ObjectMapper objectMapper) {
+    public static TestResponse from(String job, String build, Test test, List<Attachment> attachments, ObjectMapper objectMapper) {
         TestResponse r = new TestResponse();
         r.setTestName(test.getName());
         r.setError(test.getError());
@@ -18,6 +21,7 @@ public class TestResponse extends TestBaseData {
         r.setStartedDate(test.getStartedDate());
         r.setEndedDate(test.getEndedDate());
         r.setReportedBy(test.getReportedBy());
+        r.setAttachments(attachments);
         r.setTestReport(new TestReport(test.getReportType(), test.getReport()));
         r.setTestHistory(convertSafelyTestHistoryFromJson(test, objectMapper));
         return r;
