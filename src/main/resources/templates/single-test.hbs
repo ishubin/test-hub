@@ -1,0 +1,32 @@
+{{#partial "content"}}
+    <script>
+        $(function () {
+            $tc = $("#test-container");
+            API.fetchTest($tc.data("project"), $tc.data("job"), $tc.data("build"), $tc.data("test-id"), function (test) {
+                if (test.status == "passed") {
+                    test.icon = "fa-check";
+                } else if (test.status == "failed") {
+                    test.icon = "fa-times";
+                } else if (test.status === "warning") {
+                    test.icon = "fa-warning";
+                } else {
+                    test.icon = "fa-question";
+                }
+                $tc.html(Handlebars.templates["single-test-renderer"]({
+                    project: $tc.data("project"),
+                    job: $tc.data("job"),
+                    build: $tc.data("build"),
+                    test: test
+                }));
+            });
+        });
+    </script>
+    <div id="test-container" data-project="{{projectName}}" data-job="{{jobName}}" data-build="{{buildName}}" data-test-id="{{testId}}">
+    </div>
+
+    <script type="text/javascript">
+        {{precompile "single-test-renderer"}}
+    </script>
+{{/partial}}
+
+{{> base}}

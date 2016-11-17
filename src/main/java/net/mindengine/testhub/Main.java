@@ -18,6 +18,7 @@ package net.mindengine.testhub;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 import com.mysql.cj.jdbc.MysqlDataSource;
+import net.mindengine.testhub.controllers.TestsController;
 import net.mindengine.testhub.controllers.api.FileApiController;
 import net.mindengine.testhub.controllers.api.JobsApiController;
 import net.mindengine.testhub.controllers.api.ProjectsApiController;
@@ -26,8 +27,6 @@ import net.mindengine.testhub.controllers.jobs.JobsController;
 import net.mindengine.testhub.repository.RepositoryProvider;
 import net.mindengine.testhub.repository.SimpleRepositoryProvider;
 import net.mindengine.testhub.repository.files.FileStorage;
-import net.mindengine.testhub.repository.files.FilesRepository;
-import net.mindengine.testhub.repository.files.JdbcFilesRepository;
 import net.mindengine.testhub.repository.files.LocalFileStorage;
 import net.mindengine.testhub.repository.jobs.JdbcJobsRepository;
 import net.mindengine.testhub.repository.jobs.JobsRepository;
@@ -63,19 +62,18 @@ public class Main {
         ProjectsRepository projectRepository = new JdbcProjectsRepository(masterPool, slavePool);
         TestsRepository testsRepository = new JdbcTestsRepository(masterPool, slavePool);
         JobsRepository jobsRepository = new JdbcJobsRepository(masterPool, slavePool);
-        FilesRepository filesRepository = new JdbcFilesRepository(masterPool, slavePool);
-        RepositoryProvider repositoryProvider = new SimpleRepositoryProvider(projectRepository, jobsRepository, testsRepository, filesRepository);
+        RepositoryProvider repositoryProvider = new SimpleRepositoryProvider(projectRepository, jobsRepository, testsRepository);
 
         ProjectService projectService = new ProjectServiceImpl(repositoryProvider);
         JobsService jobsService = new JobsServiceImpl(repositoryProvider);
         TestService testService = new TestServiceImpl(repositoryProvider);
-        FileService fileService = new FileServiceImpl(repositoryProvider);
 
         new ProjectsApiController(projectService);
         new JobsApiController(jobsService);
         new TestsApiController(testService);
-        new FileApiController(fileService, fileStorage, filesResourceName);
+        new FileApiController(fileStorage, filesResourceName);
         new JobsController(jobsService);
+        new TestsController();
 
     }
 

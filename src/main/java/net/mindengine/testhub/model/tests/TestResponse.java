@@ -12,6 +12,7 @@ public class TestResponse extends TestBaseData {
 
     public static TestResponse from(String job, String build, Test test, List<Attachment> attachments, ObjectMapper objectMapper) {
         TestResponse r = new TestResponse();
+        r.setTestId(test.getTestId());
         r.setTestName(test.getName());
         r.setError(test.getError());
         r.setStatus(test.getStatus());

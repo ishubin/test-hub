@@ -45,17 +45,6 @@ create table test_reports (
     primary key(test_report_id)
 ) ENGINE=MYISAM;
 
-create table files (
-    file_id int(11) not null auto_increment,
-    name varchar(128) not null,
-    storage_type varchar(32) not null,
-    image_path varchar(2048) not null,
-    created_date datetime not null,
-    hash varchar(128) not null,
-    media_type varchar(32) null,
-    primary key(file_id)
-) ENGINE=MYISAM;
-
 create table test_attachments (
     test_attachment_id int(11) not null auto_increment,
     test_report_id int(11) not null,

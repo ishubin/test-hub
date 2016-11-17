@@ -2,9 +2,7 @@ package net.mindengine.testhub.controllers.api;
 
 import net.mindengine.testhub.model.files.FileInfo;
 import net.mindengine.testhub.model.files.FileResponse;
-import net.mindengine.testhub.repository.RepositoryProvider;
 import net.mindengine.testhub.repository.files.FileStorage;
-import net.mindengine.testhub.services.FileService;
 import spark.Request;
 
 import javax.servlet.MultipartConfigElement;
@@ -15,11 +13,9 @@ import java.io.IOException;
 
 public class FileApiController extends Controller {
     private final FileStorage fileStorage;
-    private final FileService fileService;
     private final String filesResourceName;
 
-    public FileApiController(FileService fileService, FileStorage fileStorage, String filesResourceName) {
-        this.fileService = fileService;
+    public FileApiController(FileStorage fileStorage, String filesResourceName) {
         this.fileStorage = fileStorage;
         this.filesResourceName = filesResourceName;
         init();
@@ -30,7 +26,7 @@ public class FileApiController extends Controller {
             String fileName = req.queryParams("name");
             String mediaType = req.queryParams("mediaType");
             FileInfo fileInfo = copyImageToStorage(req);
-            return fileService.createFile(fileName, fileStorage.getStorageType(), convertToPublicPath(fileInfo.getPath()), mediaType, fileInfo.getHash());
+            return new FileResponse(fileName, convertToPublicPath(fileInfo.getPath()), fileInfo.getHash());
         });
     }
 

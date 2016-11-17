@@ -1,0 +1,34 @@
+<div class="test-container test-status-{{test/status}}">
+    <div class="title">
+        <i class="fa {{test/icon}}"></i> <span>{{test/testName}}</span>
+    </div>
+    <ul class="test-history">
+        {{#each test/testHistory}}
+            <li>
+                <a href="/projects/{{../project}}/jobs/{{../job}}/builds/{{buildName}}/tests/{{testRunId}}" class="status-{{status}}" title="{{reason}}"></a>
+            </li>
+        {{/each}}
+    </ul>
+    <ul class="test-attachments">
+        {{#if test/attachments}}
+            <h5>Attachments</h5>
+            {{#each test/attachments}}
+                <li>
+                    <a href="{{url}}" target="_blank"><i class="fa fa-file"></i> {{name}}</a>
+                </li>
+            {{/each}}
+        {{/if}}
+    </ul>
+
+    {{#if test/reason}}
+        <h5>Reason</h5>
+        {{test/reason}}
+    {{/if}}
+
+    {{#if test/error}}
+        <h5>Error</h5>
+        <pre>
+{{test/error}}
+        </pre>
+    {{/if}}
+</div>

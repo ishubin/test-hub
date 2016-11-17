@@ -51,7 +51,9 @@ public class TestServiceImpl extends ServiceImpl implements TestService {
 
             updateBuildStatistics(buildId);
 
-            return TestResponse.from(testRequest.getJob(), testRequest.getBuild(), test, savedAttachments, objectMapper);
+            TestResponse testResponse = TestResponse.from(testRequest.getJob(), testRequest.getBuild(), test, savedAttachments, objectMapper);
+            testResponse.setTestId(testId);
+            return testResponse;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -66,6 +68,25 @@ public class TestServiceImpl extends ServiceImpl implements TestService {
         return findTestsWithStatus(buildId, expectedStatus)
             .stream()
             .map(t -> toTestResponse(jobName, buildName, t)).collect(toList());
+    }
+
+    @Override
+    public TestResponse findTest(String projectName, String jobName, String buildName, Long testId) {
+        Long projectId = findMandatoryProject(projectName);
+        Long jobId = findMandatoryJob(projectId, jobName);
+        Long buildId = findMandatoryBuild(jobId, buildName);
+
+        return findTestWithAllData(buildId, testId, jobName, buildName);
+    }
+
+    private TestResponse findTestWithAllData(Long buildId, Long testId, String jobName, String buildName) {
+        Optional<Test> test = tests().findTestByBuildAndId(buildId, testId);
+        if (test.isPresent()) {
+            List<Attachment> attachments = tests().findTestAttachments(test.get().getTestId());
+            return TestResponse.from(jobName, buildName, test.get(), attachments, objectMapper);
+        } else {
+            throw new RuntimeException("Test doesn't not exist: " + testId);
+        }
     }
 
     private void updateBuildStatistics(Long buildId) {

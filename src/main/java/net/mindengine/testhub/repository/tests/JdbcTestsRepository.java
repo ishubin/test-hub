@@ -9,7 +9,10 @@ import net.mindengine.testhub.model.tests.TestStatistics;
 import net.mindengine.testhub.model.tests.TestStatus;
 import net.mindengine.testhub.repository.JdbcRepository;
 import net.mindengine.testhub.repository.ResultSetMapper;
+
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class JdbcTestsRepository extends JdbcRepository implements TestsRepository {
     private ResultSetMapper.RSFunction<Test> testsReader = rs -> {
@@ -98,7 +101,19 @@ public class JdbcTestsRepository extends JdbcRepository implements TestsReposito
 
     @Override
     public void createTestAttachment(Long testId, Attachment attachment) {
-        insert("insert into test_attachments (test_report_id, name, url, created_date) values (?, ?, ?)",
-            testId, attachment.getName(), attachment.getUrl());
+        insert("insert into test_attachments (test_report_id, name, url, created_date) values (?, ?, ?, ?)",
+            testId, attachment.getName(), attachment.getUrl(), new Date());
+    }
+
+    @Override
+    public Optional<Test> findTestByBuildAndId(Long buildId, Long testId) {
+        return query("select * from test_reports where test_report_id = ? and build_id = ?", testId, buildId).single(testsReader);
+    }
+
+    @Override
+    public List<Attachment> findTestAttachments(Long testId) {
+        return query("select * from test_attachments where test_report_id = ?", testId).list(rs ->
+            new Attachment(rs.getString("name"), rs.getString("url"))
+        );
     }
 }

@@ -111,3 +111,66 @@ nav a.navbar-brand {
 .job-widget.job-widget-status-failed {
     background: red;
 }
+
+.test-container {
+    margin-bottom: 10px;
+}
+.test-container .title {
+    font-size: 1.5em;
+}
+.test-container.test-status-passed .title {
+    color: #398439;
+}
+.test-container.test-status-failed .title {
+    color: #c12e2a;
+}
+
+
+
+ul.test-history {
+    margin: 0 0 0 20px;
+    padding: 0;
+    list-style: none;
+}
+ul.test-history li {
+    display: inline-block;
+    margin: 2px;
+    padding: 0;
+}
+ul.test-history li a {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+}
+ul.test-history li a.status-passed {
+    background: #3e8f3e;
+}
+ul.test-history li a.status-failed {
+    background: #c12e2a;
+}
+ul.test-history li a.status-warning {
+    background: #d58512;
+}
+
+ul.test-history li a:hover {
+    opacity: 0.6;
+}
+
+
+ul.test-attachments {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+ul.test-attachments li {
+    display: inline-block;
+    margin: 2px;
+    padding: 0;
+}
+ul.test-attachments li a {
+    display: inline-block;
+    padding: 10px;
+    color: #fff;
+    background: #269abc;
+    border-radius: 5px;
+}

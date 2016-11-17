@@ -1,0 +1,17 @@
+<div class="tests">
+    {{#each tests}}
+        <div class="test-container test-status-{{status}}">
+            <a class="title" href="tests/{{testId}}"><i class="fa {{icon}}"></i> {{testName}}</a>
+            <ul class="test-history">
+                {{#each testHistory}}
+                    <li>
+                        <a href="/projects/{{../../project}}/jobs/{{../../job}}/builds/{{buildName}}/tests/{{testRunId}}" class="status-{{status}}" title="{{reason}}"></a>
+                    </li>
+                {{/each}}
+            </ul>
+            {{#if reason}}
+                <b>Reason:</b> {{reason}}
+            {{/if}}
+        </div>
+    {{/each}}
+</div>

@@ -7,6 +7,7 @@ import net.mindengine.testhub.model.tests.TestHistory;
 import net.mindengine.testhub.model.tests.TestStatistics;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TestsRepository {
 
@@ -21,4 +22,8 @@ public interface TestsRepository {
     TestStatistics countTestStatisticsForBuild(Long buildId);
 
     void createTestAttachment(Long testId, Attachment attachment);
+
+    Optional<Test> findTestByBuildAndId(Long buildId, Long testId);
+
+    List<Attachment> findTestAttachments(Long testId);
 }

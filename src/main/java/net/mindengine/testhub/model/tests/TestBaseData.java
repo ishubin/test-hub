@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 public class TestBaseData {
+    private Long testId;
     private String job;
     private String build;
     private String testName;
@@ -95,5 +96,13 @@ public class TestBaseData {
 
     public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
+    }
+
+    public Long getTestId() {
+        return testId;
+    }
+
+    public void setTestId(Long testId) {
+        this.testId = testId;
     }
 }

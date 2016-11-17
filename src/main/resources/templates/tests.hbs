@@ -1,0 +1,35 @@
+{{#partial "content"}}
+    <script>
+        $(function () {
+            $tc = $("#tests-container");
+            API.fetchTests($tc.data("project"), $tc.data("job"), $tc.data("build"), $tc.data("status-filter"), function (tests) {
+                $tc.html(Handlebars.templates["tests-renderer"]({
+                    project: $tc.data("project"),
+                    job: $tc.data("job"),
+                    build: $tc.data("build"),
+                    tests: $.map(tests, function (test) {
+                        if (test.status == "passed") {
+                            test.icon = "fa-check";
+                        } else if (test.status == "failed") {
+                            test.icon = "fa-times";
+                        } else if (test.status === "warning") {
+                            test.icon = "fa-warning";
+                        } else {
+                            test.icon = "fa-question";
+                        }
+                        return test;
+                    })
+                }));
+            });
+        });
+    </script>
+    <h1>Tests</h1>
+    <div id="tests-container" data-project="{{projectName}}" data-job="{{jobName}}" data-build="{{buildName}}" data-status-filter="{{statusFilter}}">
+    </div>
+
+    <script type="text/javascript">
+        {{precompile "tests-renderer"}}
+    </script>
+{{/partial}}
+
+{{> base}}

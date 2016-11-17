@@ -11,4 +11,6 @@ public interface TestService {
     TestResponse createTest(String project, TestRequest testRequest);
 
     List<TestResponse> findTests(String projectName, String jobName, String buildName, Optional<String> expectedStatus);
+
+    TestResponse findTest(String projectName, String jobName, String buildName, Long testId);
 }

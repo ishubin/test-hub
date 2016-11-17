@@ -25,6 +25,12 @@ public class TestsApiController extends Controller {
             Optional.ofNullable(req.queryParams("status"))
         ));
 
+        getJson("/api/projects/:project/jobs/:job/builds/:build/tests/:testId", (req, res) -> testService.findTest(
+            req.params("project"),
+            req.params("job"),
+            req.params("build"),
+            Long.parseLong(req.params("testId"))
+        ));
     }
 
 }

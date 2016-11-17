@@ -2,7 +2,6 @@ package net.mindengine.testhub.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.mindengine.testhub.repository.RepositoryProvider;
-import net.mindengine.testhub.repository.files.FilesRepository;
 import net.mindengine.testhub.repository.jobs.JobsRepository;
 import net.mindengine.testhub.repository.projects.ProjectsRepository;
 import net.mindengine.testhub.repository.tests.TestsRepository;
@@ -50,7 +49,4 @@ public abstract class ServiceImpl {
         return repositoryProvider.tests();
     }
 
-    public FilesRepository files() {
-        return repositoryProvider.files();
-    }
 }
