@@ -117,4 +117,9 @@ public class JdbcJobsRepository extends JdbcRepository implements JobsRepository
             buildId);
     }
 
+    @Override
+    public void removeBuildsOlderThan(Date cleanupDate) {
+        update("delete from builds where created_date < ?", cleanupDate);
+    }
+
 }

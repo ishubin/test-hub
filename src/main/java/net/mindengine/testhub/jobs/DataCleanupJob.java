@@ -13,24 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package net.mindengine.testhub.services;
+package net.mindengine.testhub.jobs;
 
-import net.mindengine.testhub.model.builds.BuildResponse;
-import net.mindengine.testhub.model.jobs.JobResponse;
+import net.mindengine.testhub.services.JobsService;
 
 import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
-public interface JobsService {
+public class DataCleanupJob implements Runnable {
+    private final JobsService jobsService;
+    private final long cleanupPeriod = 10 * 24 * 3600 * 1000;
 
-    List<JobResponse> findJobs(String project);
+    public DataCleanupJob(JobsService jobsService) {
+        this.jobsService = jobsService;
+    }
 
-    Optional<JobResponse> findJob(String project, String jobName);
-
-    List<BuildResponse> findBuilds(String project, String jobName);
-
-    BuildResponse findBuild(String project, String jobName, String buildName);
-
-    void removeBuildsOlderThan(Date cleanupDate);
+    @Override
+    public void run() {
+        try {
+            Date cleanupDate = new Date(new Date().getTime() - cleanupPeriod);
+            jobsService.removeBuildsOlderThan(cleanupDate);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 }

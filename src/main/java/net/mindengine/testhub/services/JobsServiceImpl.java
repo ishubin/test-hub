@@ -22,6 +22,7 @@ import net.mindengine.testhub.model.jobs.JobResponse;
 import net.mindengine.testhub.model.tests.TestStatus;
 import net.mindengine.testhub.repository.RepositoryProvider;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,6 +74,11 @@ public class JobsServiceImpl extends ServiceImpl implements JobsService {
         }
         return build.get();
 
+    }
+
+    @Override
+    public void removeBuildsOlderThan(Date cleanupDate) {
+        jobs().removeBuildsOlderThan(cleanupDate);
     }
 
     private List<JobResponse> findJobsWithLatestBuild(Long projectId) {

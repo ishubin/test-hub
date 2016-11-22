@@ -19,6 +19,7 @@ import net.mindengine.testhub.model.builds.Build;
 import net.mindengine.testhub.model.jobs.Job;
 import net.mindengine.testhub.model.tests.TestStatistics;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,4 +41,6 @@ public interface JobsRepository {
     List<Build> findLatestBuildsForJob(Long jobId, int amountOfBuilds);
 
     void updateTestStatistics(Long buildId, TestStatistics testStatistics);
+
+    void removeBuildsOlderThan(Date cleanupDate);
 }

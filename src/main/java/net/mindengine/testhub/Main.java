@@ -24,6 +24,7 @@ import net.mindengine.testhub.controllers.api.JobsApiController;
 import net.mindengine.testhub.controllers.api.ProjectsApiController;
 import net.mindengine.testhub.controllers.api.TestsApiController;
 import net.mindengine.testhub.controllers.jobs.JobsController;
+import net.mindengine.testhub.jobs.DataCleanupJob;
 import net.mindengine.testhub.repository.RepositoryProvider;
 import net.mindengine.testhub.repository.SimpleRepositoryProvider;
 import net.mindengine.testhub.repository.files.FileStorage;
@@ -39,6 +40,9 @@ import org.flywaydb.core.Flyway;
 
 import java.io.File;
 import java.sql.SQLException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static spark.Spark.externalStaticFileLocation;
 import static spark.Spark.staticFileLocation;
@@ -49,6 +53,9 @@ public class Main {
     private final String filesResourcePrefix;
     private final FileStorage fileStorage;
     public static final String FILES_RESOURCE_NAME = "files";
+
+    private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
+
 
     public Main(ServiceProvider serviceProvider, String filesResourceName, FileStorage fileStorage) {
         this.serviceProvider = serviceProvider;
@@ -97,6 +104,14 @@ public class Main {
         new FileApiController(fileStorage, filesResourcePrefix);
         new JobsController(serviceProvider.findJobsService());
         new TestsController();
+
+        scheduledExecutorService.scheduleAtFixedRate(
+            new DataCleanupJob(serviceProvider.findJobsService()),
+            1,
+            5,
+            TimeUnit.MINUTES
+        );
+
     }
 
     private static String makeDirs(String path) {
