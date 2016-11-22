@@ -15,17 +15,29 @@
  ******************************************************************************/
 package net.mindengine.testhub.services;
 
-import net.mindengine.testhub.model.projects.Project;
-import net.mindengine.testhub.repository.RepositoryProvider;
+public class DefaultServiceProvider implements ServiceProvider {
+    private final ProjectService projectService;
+    private final JobsService jobsService;
+    private final TestService testService;
 
-public class ProjectServiceImpl extends ServiceImpl implements ProjectService {
-    public ProjectServiceImpl(RepositoryProvider repositoryProvider) {
-        super(repositoryProvider);
-
+    public DefaultServiceProvider(ProjectService projectService, JobsService jobsService, TestService testService) {
+        this.projectService = projectService;
+        this.jobsService = jobsService;
+        this.testService = testService;
     }
 
     @Override
-    public void createProject(Project project) {
-        projects().createProject(project);
+    public ProjectService findProjectService() {
+        return projectService;
+    }
+
+    @Override
+    public JobsService findJobsService() {
+        return jobsService;
+    }
+
+    @Override
+    public TestService findTestService() {
+        return testService;
     }
 }

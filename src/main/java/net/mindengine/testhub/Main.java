@@ -1,18 +1,18 @@
 /*******************************************************************************
-* Copyright 2016 Ivan Shubin http://galenframework.com
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*   http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-******************************************************************************/
+ * Copyright 2016 Ivan Shubin https://github.com/ishubin/dash-server
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package net.mindengine.testhub;
 
 import com.jolbox.bonecp.BoneCP;
@@ -45,20 +45,39 @@ import static spark.Spark.staticFileLocation;
 
 
 public class Main {
+    private ServiceProvider serviceProvider;
+    private final String filesResourcePrefix;
+    private final FileStorage fileStorage;
+    public static final String FILES_RESOURCE_NAME = "files";
+
+    public Main(ServiceProvider serviceProvider, String filesResourceName, FileStorage fileStorage) {
+        this.serviceProvider = serviceProvider;
+        this.filesResourcePrefix = filesResourceName;
+        this.fileStorage = fileStorage;
+    }
 
     public static void main(String[] args) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException {
-        String jdbcUrl = "jdbc:mysql://localhost/test_hub?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-        BoneCP masterPool = createBoneCP(jdbcUrl, "root", "root123");
-        BoneCP slavePool = createBoneCP(jdbcUrl, "root", "root123");
+        String dbHost = "localhost:3306";
+        String dbSchema = "test_hub";
+        String dbUser = "root";
+        String dbPassword = "root123";
+        String jdbcUrl = "jdbc:mysql://" + dbHost + "/" + dbSchema + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+        String fileStoragePath = "/opt/test-hub-storage";
+        BoneCP masterPool = createBoneCP(jdbcUrl, dbUser, dbPassword);
+        BoneCP slavePool = createBoneCP(jdbcUrl, dbUser, dbPassword);
 
-        String externalLocation = makeDirs("/opt/test-hub-storage");
-        String filesResourceName = "files";
-        String fileStoragePath = makeDirs(externalLocation + File.separator + filesResourceName);
+        String externalLocation = makeDirs(fileStoragePath);
+        String fullFileStoragePath = makeDirs(externalLocation + File.separator + FILES_RESOURCE_NAME);
+
         staticFileLocation("/public");
         externalStaticFileLocation(externalLocation);
 
-        FileStorage fileStorage = new LocalFileStorage(fileStoragePath);
+        FileStorage fileStorage = new LocalFileStorage(fullFileStoragePath);
+        ServiceProvider serviceProvider = createServiceProvider(masterPool, slavePool);
+        new Main(serviceProvider, FILES_RESOURCE_NAME, fileStorage).startServer();
+    }
 
+    private static ServiceProvider createServiceProvider(BoneCP masterPool, BoneCP slavePool) {
         ProjectsRepository projectRepository = new JdbcProjectsRepository(masterPool, slavePool);
         TestsRepository testsRepository = new JdbcTestsRepository(masterPool, slavePool);
         JobsRepository jobsRepository = new JdbcJobsRepository(masterPool, slavePool);
@@ -68,13 +87,16 @@ public class Main {
         JobsService jobsService = new JobsServiceImpl(repositoryProvider);
         TestService testService = new TestServiceImpl(repositoryProvider);
 
-        new ProjectsApiController(projectService);
-        new JobsApiController(jobsService);
-        new TestsApiController(testService);
-        new FileApiController(fileStorage, filesResourceName);
-        new JobsController(jobsService);
-        new TestsController();
+        return new DefaultServiceProvider(projectService, jobsService, testService);
+    }
 
+    private void startServer() {
+        new ProjectsApiController(serviceProvider.findProjectService());
+        new JobsApiController(serviceProvider.findJobsService());
+        new TestsApiController(serviceProvider.findTestService());
+        new FileApiController(fileStorage, filesResourcePrefix);
+        new JobsController(serviceProvider.findJobsService());
+        new TestsController();
     }
 
     private static String makeDirs(String path) {

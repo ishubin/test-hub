@@ -15,17 +15,11 @@
  ******************************************************************************/
 package net.mindengine.testhub.services;
 
-import net.mindengine.testhub.model.projects.Project;
-import net.mindengine.testhub.repository.RepositoryProvider;
+public interface ServiceProvider {
+    
+    ProjectService findProjectService();
 
-public class ProjectServiceImpl extends ServiceImpl implements ProjectService {
-    public ProjectServiceImpl(RepositoryProvider repositoryProvider) {
-        super(repositoryProvider);
+    JobsService findJobsService();
 
-    }
-
-    @Override
-    public void createProject(Project project) {
-        projects().createProject(project);
-    }
+    TestService findTestService();
 }
