@@ -16,6 +16,11 @@
 package net.mindengine.testhub.properties;
 
 public class TestHubProperties {
+
+    public int port() {
+        return intProperty("testhub.port", 8080);
+    }
+
     public String dbJdbcUrl() {
         return "jdbc:mysql://" + dbHost() + "/" + dbSchema() + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     }
@@ -38,6 +43,15 @@ public class TestHubProperties {
 
     public String fileStoragePath() {
         return property("testhub.storage", "/opt/test-hub-storage");
+    }
+
+    private int intProperty(String name, int defaultValue) {
+        String strValue = property(name, null);
+        if (strValue != null) {
+            return Integer.parseInt(strValue);
+        } else {
+            return defaultValue;
+        }
     }
 
     private String property(String name, String defaultValue) {

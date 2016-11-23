@@ -46,6 +46,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static spark.Spark.externalStaticFileLocation;
+import static spark.Spark.port;
 import static spark.Spark.staticFileLocation;
 
 
@@ -56,6 +57,8 @@ public class Main {
     public static final String FILES_RESOURCE_NAME = "files";
 
     private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
+
+    private int serverPort = 8080;
 
 
     public Main(ServiceProvider serviceProvider, String filesResourceName, FileStorage fileStorage) {
@@ -71,10 +74,14 @@ public class Main {
         String fullFileStoragePath = makeDirs(externalLocation + File.separator + FILES_RESOURCE_NAME);
 
         FileStorage fileStorage = new LocalFileStorage(fullFileStoragePath);
-        new Main(createServiceProvider(properties), FILES_RESOURCE_NAME, fileStorage).startServer(externalLocation);
+        new Main(createServiceProvider(properties), FILES_RESOURCE_NAME, fileStorage)
+            .withServerPort(properties.port())
+            .startServer(externalLocation);
     }
 
+
     public void startServer(String externalLocation) {
+        port(serverPort);
         staticFileLocation("/public");
         externalStaticFileLocation(externalLocation);
         new ProjectsApiController(serviceProvider.findProjectService());
@@ -138,5 +145,10 @@ public class Main {
         config.setUsername(user);
         config.setPassword(password);
         return new BoneCP(config);
+    }
+
+    public Main withServerPort(int serverPort) {
+        this.serverPort = serverPort;
+        return this;
     }
 }

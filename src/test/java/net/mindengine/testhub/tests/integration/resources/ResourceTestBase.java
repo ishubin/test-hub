@@ -86,7 +86,7 @@ public abstract class ResourceTestBase {
     }
 
     protected String getTestUrl() {
-        return "http://localhost:4567";
+        return "http://localhost:" + MockedWebApp.SERVER_PORT;
     }
 
     private HttpClient client = HttpClientBuilder.create()

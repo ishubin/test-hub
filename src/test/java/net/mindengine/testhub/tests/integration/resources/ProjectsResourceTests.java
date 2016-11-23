@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verify;
 
 public class ProjectsResourceTests extends ResourceTestBase {
 
-    ProjectService projectService = registerMock(ProjectService.class);
+    private ProjectService projectService = registerMock(ProjectService.class);
 
 
     @Test

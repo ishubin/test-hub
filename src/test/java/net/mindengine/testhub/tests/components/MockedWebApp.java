@@ -29,13 +29,15 @@ import static spark.Spark.get;
 
 public class MockedWebApp {
     private static MockedWebApp _instance = null;
+    public static final int SERVER_PORT = 9876;
     public static final String MOCK_KEY_COOKIE_NAME = "__MockUniqueKey__";
     private final String externalLocation = createExternalLocation("target/storage");
     private final String fileStoragePath = externalLocation + File.separator + FILES_RESOURCE_NAME;
     private final Main main;
 
     private MockedWebApp() {
-        main = new Main(new MockedServiceProvider(), FILES_RESOURCE_NAME, new LocalFileStorage(fileStoragePath));
+        main = new Main(new MockedServiceProvider(), FILES_RESOURCE_NAME, new LocalFileStorage(fileStoragePath))
+            .withServerPort(SERVER_PORT);
         start();
     }
 
