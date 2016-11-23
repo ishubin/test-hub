@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Ivan Shubin https://github.com/ishubin/dash-server
+ * Copyright 2016 Ivan Shubin https://github.com/ishubin/test-hub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

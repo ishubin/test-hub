@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016 Ivan Shubin https://github.com/ishubin/dash-server
+ * Copyright 2016 Ivan Shubin https://github.com/ishubin/test-hub
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import net.mindengine.testhub.controllers.api.ProjectsApiController;
 import net.mindengine.testhub.controllers.api.TestsApiController;
 import net.mindengine.testhub.controllers.jobs.JobsController;
 import net.mindengine.testhub.jobs.DataCleanupJob;
+import net.mindengine.testhub.properties.TestHubProperties;
 import net.mindengine.testhub.repository.RepositoryProvider;
 import net.mindengine.testhub.repository.SimpleRepositoryProvider;
 import net.mindengine.testhub.repository.files.FileStorage;
@@ -64,40 +65,18 @@ public class Main {
     }
 
     public static void main(String[] args) throws ClassNotFoundException, IllegalAccessException, InstantiationException, SQLException {
-        String dbHost = "localhost:3306";
-        String dbSchema = "test_hub";
-        String dbUser = "root";
-        String dbPassword = "root123";
-        String jdbcUrl = "jdbc:mysql://" + dbHost + "/" + dbSchema + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
-        String fileStoragePath = "/opt/test-hub-storage";
-        BoneCP masterPool = createBoneCP(jdbcUrl, dbUser, dbPassword);
-        BoneCP slavePool = createBoneCP(jdbcUrl, dbUser, dbPassword);
+        TestHubProperties properties = new TestHubProperties();
 
-        String externalLocation = makeDirs(fileStoragePath);
+        String externalLocation = makeDirs(properties.fileStoragePath());
         String fullFileStoragePath = makeDirs(externalLocation + File.separator + FILES_RESOURCE_NAME);
 
+        FileStorage fileStorage = new LocalFileStorage(fullFileStoragePath);
+        new Main(createServiceProvider(properties), FILES_RESOURCE_NAME, fileStorage).startServer(externalLocation);
+    }
+
+    public void startServer(String externalLocation) {
         staticFileLocation("/public");
         externalStaticFileLocation(externalLocation);
-
-        FileStorage fileStorage = new LocalFileStorage(fullFileStoragePath);
-        ServiceProvider serviceProvider = createServiceProvider(masterPool, slavePool);
-        new Main(serviceProvider, FILES_RESOURCE_NAME, fileStorage).startServer();
-    }
-
-    private static ServiceProvider createServiceProvider(BoneCP masterPool, BoneCP slavePool) {
-        ProjectsRepository projectRepository = new JdbcProjectsRepository(masterPool, slavePool);
-        TestsRepository testsRepository = new JdbcTestsRepository(masterPool, slavePool);
-        JobsRepository jobsRepository = new JdbcJobsRepository(masterPool, slavePool);
-        RepositoryProvider repositoryProvider = new SimpleRepositoryProvider(projectRepository, jobsRepository, testsRepository);
-
-        ProjectService projectService = new ProjectServiceImpl(repositoryProvider);
-        JobsService jobsService = new JobsServiceImpl(repositoryProvider);
-        TestService testService = new TestServiceImpl(repositoryProvider);
-
-        return new DefaultServiceProvider(projectService, jobsService, testService);
-    }
-
-    private void startServer() {
         new ProjectsApiController(serviceProvider.findProjectService());
         new JobsApiController(serviceProvider.findJobsService());
         new TestsApiController(serviceProvider.findTestService());
@@ -113,6 +92,23 @@ public class Main {
         );
 
     }
+
+    private static ServiceProvider createServiceProvider(TestHubProperties properties) throws ClassNotFoundException, SQLException, InstantiationException, IllegalAccessException {
+        BoneCP masterPool = createBoneCP(properties.dbJdbcUrl(), properties.dbUser(), properties.dbPassword());
+        BoneCP slavePool = createBoneCP(properties.dbJdbcUrl(), properties.dbUser(), properties.dbPassword());
+
+        ProjectsRepository projectRepository = new JdbcProjectsRepository(masterPool, slavePool);
+        TestsRepository testsRepository = new JdbcTestsRepository(masterPool, slavePool);
+        JobsRepository jobsRepository = new JdbcJobsRepository(masterPool, slavePool);
+        RepositoryProvider repositoryProvider = new SimpleRepositoryProvider(projectRepository, jobsRepository, testsRepository);
+
+        ProjectService projectService = new ProjectServiceImpl(repositoryProvider);
+        JobsService jobsService = new JobsServiceImpl(repositoryProvider);
+        TestService testService = new TestServiceImpl(repositoryProvider);
+
+        return new DefaultServiceProvider(projectService, jobsService, testService);
+    }
+
 
     private static String makeDirs(String path) {
         File dir = new File(path);
