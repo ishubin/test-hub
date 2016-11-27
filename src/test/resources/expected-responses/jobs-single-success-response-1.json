@@ -1,0 +1,12 @@
+{
+  "latestBuild": {
+    "name": "#123",
+    "testStatistics": {
+      "passed": 1,
+      "failed": 3,
+      "skipped": 4
+    }
+  },
+  "name": "Some_tests",
+  "status": "failed"
+}

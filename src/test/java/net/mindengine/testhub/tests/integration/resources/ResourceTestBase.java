@@ -39,6 +39,7 @@ import org.testng.annotations.BeforeSuite;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -46,6 +47,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static spark.Spark.stop;
 
 public abstract class ResourceTestBase {
@@ -58,7 +60,7 @@ public abstract class ResourceTestBase {
         LOG.info(format("Generating mock unique key %s for test %s", id, getClass().getSimpleName()));
         return id;
     }
-    private List<Object> mocks = new LinkedList<>();
+    private List<Object> mocks = new ArrayList<>();
 
     @BeforeMethod
     public void resetAllMocks() {
@@ -83,6 +85,10 @@ public abstract class ResourceTestBase {
     @AfterSuite
     public void closeWebServer() {
         stop();
+    }
+
+    public void verifyNoMoreInteractionsOnAllMocks() {
+        verifyNoMoreInteractions(mocks.toArray(new Object[]{}));
     }
 
     protected String getTestUrl() {
