@@ -17,6 +17,9 @@ package net.mindengine.testhub.model.jobs;
 
 import net.mindengine.testhub.model.builds.BuildResponse;
 import net.mindengine.testhub.model.tests.TestStatus;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class JobResponse {
     private BuildResponse latestBuild;
@@ -51,5 +54,38 @@ public class JobResponse {
 
     public void setStatus(TestStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        JobResponse that = (JobResponse) o;
+
+        return new EqualsBuilder()
+            .append(latestBuild, that.latestBuild)
+            .append(name, that.name)
+            .append(status, that.status)
+            .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+            .append(latestBuild)
+            .append(name)
+            .append(status)
+            .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("latestBuild", latestBuild)
+            .append("name", name)
+            .append("status", status)
+            .toString();
     }
 }

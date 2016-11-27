@@ -1,0 +1,26 @@
+[
+  {
+    "latestBuild": {
+      "name": "#123",
+      "testStatistics": {
+        "passed": 1,
+        "failed": 3,
+        "skipped": 4
+      }
+    },
+    "name": "Some_tests",
+    "status": "failed"
+  },
+  {
+    "latestBuild": {
+      "name": "#32",
+      "testStatistics": {
+        "passed": 40,
+        "failed": 0,
+        "skipped": 5
+      }
+    },
+    "name": "Some_tests_2",
+    "status": "passed"
+  }
+]

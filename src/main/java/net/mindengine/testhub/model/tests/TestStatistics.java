@@ -15,6 +15,10 @@
  ******************************************************************************/
 package net.mindengine.testhub.model.tests;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 public class TestStatistics {
 
     private long passed;
@@ -52,5 +56,38 @@ public class TestStatistics {
 
     public Long getSkipped() {
         return skipped;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TestStatistics that = (TestStatistics) o;
+
+        return new EqualsBuilder()
+            .append(passed, that.passed)
+            .append(failed, that.failed)
+            .append(skipped, that.skipped)
+            .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+            .append(passed)
+            .append(failed)
+            .append(skipped)
+            .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("passed", passed)
+            .append("failed", failed)
+            .append("skipped", skipped)
+            .toString();
     }
 }
