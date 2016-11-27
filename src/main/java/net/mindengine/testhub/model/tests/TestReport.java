@@ -19,6 +19,9 @@ public class TestReport {
     private String reportType;
     private String report;
 
+    public TestReport() {
+    }
+
     public TestReport(String reportType, String report) {
         this.reportType = reportType;
         this.report = report;

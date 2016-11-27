@@ -16,22 +16,29 @@
 package net.mindengine.testhub.model.tests;
 
 import net.mindengine.testhub.model.Attachment;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.Date;
 import java.util.List;
 
 public class TestBaseData {
-    private Long testId;
-    private String job;
-    private String build;
-    private String testName;
-    private TestStatus status;
-    private String reason;
-    private String error;
-    private String reportedBy;
-    private Date startedDate;
-    private Date endedDate;
-    private List<Attachment> attachments;
+    protected Long testId;
+    protected String job;
+    protected String build;
+    protected String testName;
+    protected TestStatus status;
+    protected String reason;
+    protected String error;
+    protected String reportedBy;
+    protected Date startedDate;
+    protected Date endedDate;
+    protected List<Attachment> attachments;
+
+
+    public TestBaseData() {
+    }
 
     public String getJob() {
         return job;
@@ -120,4 +127,63 @@ public class TestBaseData {
     public void setTestId(Long testId) {
         this.testId = testId;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TestBaseData that = (TestBaseData) o;
+
+        return new EqualsBuilder()
+            .append(testId, that.testId)
+            .append(job, that.job)
+            .append(build, that.build)
+            .append(testName, that.testName)
+            .append(status, that.status)
+            .append(reason, that.reason)
+            .append(error, that.error)
+            .append(reportedBy, that.reportedBy)
+            .append(startedDate, that.startedDate)
+            .append(endedDate, that.endedDate)
+            .append(attachments, that.attachments)
+            .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+            .append(testId)
+            .append(job)
+            .append(build)
+            .append(testName)
+            .append(status)
+            .append(reason)
+            .append(error)
+            .append(reportedBy)
+            .append(startedDate)
+            .append(endedDate)
+            .append(attachments)
+            .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("testId", testId)
+            .append("job", job)
+            .append("build", build)
+            .append("testName", testName)
+            .append("status", status)
+            .append("reason", reason)
+            .append("error", error)
+            .append("reportedBy", reportedBy)
+            .append("startedDate", startedDate)
+            .append("endedDate", endedDate)
+            .append("attachments", attachments)
+            .toString();
+    }
+
 }

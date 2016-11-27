@@ -39,6 +39,8 @@ import org.testng.annotations.BeforeSuite;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -54,6 +56,15 @@ public abstract class ResourceIntegrationTestBase {
     private Logger LOG = LoggerFactory.getLogger(getClass());
 
     private String mockUniqueKey = provideMockUniqueKey();
+
+    protected ObjectMapper mapper = createObjectMapper();
+
+    protected ObjectMapper createObjectMapper() {
+        ObjectMapper m = new ObjectMapper();
+        m.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+        return m;
+    }
+
 
     private String provideMockUniqueKey() {
         String id = UUID.randomUUID().toString();
@@ -130,11 +141,16 @@ public abstract class ResourceIntegrationTestBase {
         return new Response(code, textResponse);
     }
 
-    ObjectMapper mapper = new ObjectMapper();
 
     public String jsonFromResources(String path) throws IOException {
         String contents = FileUtils.readFileToString(new File(getClass().getResource(path).getFile()));
         JsonNode jsonNode = mapper.readTree(contents);
         return mapper.writeValueAsString(jsonNode);
     }
+
+    public <T> T objectFromResources(String path, Class<T> objClass) throws IOException {
+        String contents = FileUtils.readFileToString(new File(getClass().getResource(path).getFile()));
+        return mapper.readValue(contents, objClass);
+    }
 }
+

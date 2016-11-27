@@ -23,6 +23,7 @@ import spark.Route;
 import spark.TemplateEngine;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -39,7 +40,13 @@ public class Controller {
         return engine;
     }
 
-    protected ObjectMapper objectMapper = new ObjectMapper();
+    protected ObjectMapper objectMapper = createObjectMapper();
+
+    private ObjectMapper createObjectMapper() {
+        ObjectMapper m = new ObjectMapper();
+        m.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+        return m;
+    }
 
     public <T> T fromJson(Request req, Class<T> clazz) throws IOException {
         return objectMapper.readValue(req.body(), clazz);

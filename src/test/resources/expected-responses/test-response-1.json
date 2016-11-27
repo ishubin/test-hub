@@ -1,0 +1,18 @@
+{
+  "testId": 1,
+  "job": "UI_tests",
+  "build": "1",
+  "testName": "net.mindengine.tests.SearchTest",
+  "status": "failed",
+  "reason": "driver crashed",
+  "error": "something went wrong",
+  "reportedBy": "jenkins",
+  "startedDate": "2016-11-04 22:33:58",
+  "endedDate": "2016-11-04 22:34:14",
+  "attachments": null,
+  "testReport": {
+    "reportType": "json",
+    "report": "{\"nodes\":[{\"name\":\"Creating driver\"}]}"
+  },
+  "testHistory": null
+}

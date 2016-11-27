@@ -17,6 +17,9 @@ package net.mindengine.testhub.model.tests;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.mindengine.testhub.model.Attachment;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.util.List;
 
@@ -24,6 +27,7 @@ public class TestResponse extends TestBaseData {
 
     private TestReport testReport;
     private TestHistory[] testHistory;
+
 
     public static TestResponse from(String job, String build, Test test, List<Attachment> attachments, ObjectMapper objectMapper) {
         TestResponse r = new TestResponse();
@@ -56,15 +60,63 @@ public class TestResponse extends TestBaseData {
         return testReport;
     }
 
-    public void setTestReport(TestReport testReport) {
+    public TestResponse setTestReport(TestReport testReport) {
         this.testReport = testReport;
+        return this;
     }
 
     public TestHistory[] getTestHistory() {
         return testHistory;
     }
 
-    public void setTestHistory(TestHistory[] testHistory) {
+    public TestHistory[] setTestHistory(TestHistory[] testHistory) {
         this.testHistory = testHistory;
+        return testHistory;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TestResponse that = (TestResponse) o;
+
+        return new EqualsBuilder()
+            .appendSuper(super.equals(o))
+            .append(testReport, that.testReport)
+            .append(testHistory, that.testHistory)
+            .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+            .appendSuper(super.hashCode())
+            .append(testReport)
+            .append(testHistory)
+            .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("testId", testId)
+            .append("job", job)
+            .append("build", build)
+            .append("testName", testName)
+            .append("status", status)
+            .append("reason", reason)
+            .append("error", error)
+            .append("reportedBy", reportedBy)
+            .append("startedDate", startedDate)
+            .append("endedDate", endedDate)
+            .append("attachments", attachments)
+            .append("testReport", testReport)
+            .append("testHistory", testHistory)
+            .toString();
+    }
+
+
+
 }
