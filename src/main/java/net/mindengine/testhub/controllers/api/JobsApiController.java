@@ -15,9 +15,6 @@
  ******************************************************************************/
 package net.mindengine.testhub.controllers.api;
 
-import net.mindengine.testhub.model.builds.Build;
-import net.mindengine.testhub.model.builds.BuildResponse;
-import net.mindengine.testhub.model.jobs.Job;
 import net.mindengine.testhub.model.jobs.JobResponse;
 import net.mindengine.testhub.services.JobsService;
 

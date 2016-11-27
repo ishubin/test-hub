@@ -1,0 +1,15 @@
+[{
+  "name": "123",
+  "testStatistics": {
+    "passed": 4,
+    "failed": 0,
+    "skipped": 3
+  }
+}, {
+  "name": "124",
+  "testStatistics": {
+    "passed": 1,
+    "failed": 2,
+    "skipped": 3
+  }
+}]

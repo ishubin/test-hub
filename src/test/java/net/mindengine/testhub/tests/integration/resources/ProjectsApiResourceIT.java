@@ -26,7 +26,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
 
-public class ProjectsResourceIT extends ResourceTestBase {
+public class ProjectsApiResourceIT extends ResourceIntegrationTestBase {
 
     private ProjectService projectService = registerMock(ProjectService.class);
 

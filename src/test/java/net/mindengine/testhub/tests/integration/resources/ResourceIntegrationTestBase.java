@@ -50,7 +50,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static spark.Spark.stop;
 
-public abstract class ResourceTestBase {
+public abstract class ResourceIntegrationTestBase {
     private Logger LOG = LoggerFactory.getLogger(getClass());
 
     private String mockUniqueKey = provideMockUniqueKey();
