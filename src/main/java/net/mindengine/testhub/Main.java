@@ -58,7 +58,7 @@ public class Main {
 
     private ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
 
-    private int serverPort = 8080;
+    private int serverPort = 8082;
 
 
     public Main(ServiceProvider serviceProvider, String filesResourceName, FileStorage fileStorage) {

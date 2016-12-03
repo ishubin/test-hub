@@ -42,9 +42,22 @@ public class TestResponse extends TestBaseData {
         r.setEndedDate(test.getEndedDate());
         r.setReportedBy(test.getReportedBy());
         r.setAttachments(attachments);
-        r.setTestReport(new TestReport(test.getReportType(), test.getReport()));
+        r.setTestReport(new TestReport(test.getReportType(), parseTestReport(test.getReport(), objectMapper)));
         r.setTestHistory(convertSafelyTestHistoryFromJson(test, objectMapper));
         return r;
+    }
+
+    private static Object parseTestReport(String report, ObjectMapper objectMapper) {
+        //TODO find a nicer way
+        try {
+            report = report.trim();
+            if (report.startsWith("{") && report.endsWith("}")
+                || report.startsWith("[") && report.endsWith("]")) {
+                return objectMapper.readTree(report);
+            }
+        } catch (Exception ex) {
+        }
+        return report;
     }
 
     private static TestHistory[] convertSafelyTestHistoryFromJson(Test test, ObjectMapper objectMapper) {

@@ -17,12 +17,12 @@ package net.mindengine.testhub.model.tests;
 
 public class TestReport {
     private String reportType;
-    private String report;
+    private Object report;
 
     public TestReport() {
     }
 
-    public TestReport(String reportType, String report) {
+    public TestReport(String reportType, Object report) {
         this.reportType = reportType;
         this.report = report;
     }
@@ -35,11 +35,11 @@ public class TestReport {
         this.reportType = reportType;
     }
 
-    public String getReport() {
+    public Object getReport() {
         return report;
     }
 
-    public void setReport(String report) {
+    public void setReport(Object report) {
         this.report = report;
     }
 }
