@@ -27,8 +27,13 @@
 
     {{#if test/error}}
         <h5>Error</h5>
-        <pre>
-{{test/error}}
-        </pre>
+        <pre>{{test/error}}</pre>
+    {{/if}}
+
+    {{#if test/testReport}}
+        <div class="test-report">
+            <h2>Report</h2>
+            {{renderTestReport test/testReport/reportType test/testReport/report}}
+        </div>
     {{/if}}
 </div>

@@ -1,7 +1,7 @@
 {{#partial "content"}}
     <script>
         $(function () {
-            $tc = $("#test-container");
+            var $tc = $("#test-container");
             API.fetchTest($tc.data("project"), $tc.data("job"), $tc.data("build"), $tc.data("test-id"), function (test) {
                 if (test.status == "passed") {
                     test.icon = "fa-check";
@@ -24,9 +24,9 @@
     <div id="test-container" data-project="{{projectName}}" data-job="{{jobName}}" data-build="{{buildName}}" data-test-id="{{testId}}">
     </div>
 
-    <script type="text/javascript">
-        {{precompile "single-test-renderer"}}
-    </script>
+    <script type="text/javascript">{{precompile "single-test-renderer"}}</script>
+    <script type="text/javascript">{{precompile "test-reports/report-text"}}</script>
+    <script type="text/javascript">{{precompile "test-reports/report-json"}}</script>
 {{/partial}}
 
 {{> base}}

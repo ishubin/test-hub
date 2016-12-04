@@ -22,6 +22,7 @@ import spark.ModelAndView;
 import spark.TemplateEngine;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class HandlebarsTemplateEngine extends TemplateEngine {
     }
 
     private void initHelpers() {
-        this.handlebars.registerHelper("ifGreaterThan", (var, options) -> {
+        handlebars.registerHelper("ifGreaterThan", (var, options) -> {
             long a = ((Number)var).longValue();
             long b = ((Number)options.param(0)).longValue();
             if (a > b) {
@@ -47,6 +48,9 @@ public class HandlebarsTemplateEngine extends TemplateEngine {
                 return options.inverse(var);
             }
         });
+
+        handlebars.registerHelper("nlToBr", (var, options) -> "");
+        handlebars.registerHelper("renderTestReport", (var, options) -> "");
     }
 
     public String render(ModelAndView modelAndView) {
