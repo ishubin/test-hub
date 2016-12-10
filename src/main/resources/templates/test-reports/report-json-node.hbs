@@ -1,0 +1,17 @@
+<div class="report-json-node-container">
+    <div class="report-json-node-title report-json-node-status-{{status}}">
+        <span class="report-json-node-status-label">{{status}}</span>
+        <span class="report-json-node-date">{{time}}</span>
+        <span class="report-json-node-title">{{name}}</span>
+    </div>
+    <div class="report-json-node-children-container">
+        {{#if details}}
+            <div class="report-json-node-details">{{details}}</div>
+        {{/if}}
+        <div class="report-json-node-children">
+            {{#each nodes}}
+                {{renderByTemplate this 'test-reports/report-json-node'}}
+            {{/each}}
+        </div>
+    </div>
+</div>

@@ -54,3 +54,11 @@ Handlebars.registerHelper("renderTestReport", function (reportType, report) {
         return "Unknown report type: " + reportType;
     }
 });
+Handlebars.registerHelper("renderByTemplate", function (data, templateName) {
+    var tpl = Handlebars.templates[templateName];
+    if (tpl) {
+        return new Handlebars.SafeString(tpl(data));
+    } else {
+        return "Unknown template: " + templateName;
+    }
+});

@@ -16,13 +16,11 @@
 package net.mindengine.testhub.templates;
 
 import com.github.jknack.handlebars.*;
-import com.github.jknack.handlebars.helper.BlockHelper;
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader;
 import spark.ModelAndView;
 import spark.TemplateEngine;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,8 +47,9 @@ public class HandlebarsTemplateEngine extends TemplateEngine {
             }
         });
 
-        handlebars.registerHelper("nlToBr", (var, options) -> "");
-        handlebars.registerHelper("renderTestReport", (var, options) -> "");
+        handlebars.registerHelper("nlToBr", (var, options) -> "---");
+        handlebars.registerHelper("renderTestReport", (var, options) -> "---");
+        handlebars.registerHelper("renderByTemplate", (var, options) -> "---");
     }
 
     public String render(ModelAndView modelAndView) {
