@@ -179,8 +179,38 @@ ul.test-attachments li a {
 
 
 /* report-json */
-.report-json-node-children-container {
-    display: block;
-    position: relative;
-    padding-left: 20px;
+ul.report-json {
+    list-style: none;
+    margin: 0;
+    padding-left: 10px;
 }
+
+.report-json-node-children-container {
+    /*display: none;*/
+    padding-left: 20px;
+    margin-left: 14px;
+    border-left: 1px dashed #eee;
+}
+
+.report-json-node-expand {
+    position: relative;
+    display: inline-block;
+    padding: 5px;
+    text-decoration: none;
+    border-radius: 10px;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    margin-left: 25px;
+}
+.report-json-node-status-info > .report-json-node-expand {
+    background: #f0f0f0;
+    color: #555;
+}
+.report-json-node-status-error > .report-json-node-expand {
+    background: #f04040;
+    color: #fff;
+}
+.report-json-node-status-error > .report-json-node-title {
+    color: #DB4B4B;
+}
+

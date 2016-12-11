@@ -1,7 +1,8 @@
 {{#partial "content"}}
     <script>
         $(function () {
-            var $tc = $("#test-container");
+            var domElement = document.getElementById("test-container");
+            var $tc = $(domElement);
             API.fetchTest($tc.data("project"), $tc.data("job"), $tc.data("build"), $tc.data("test-id"), function (test) {
                 if (test.status == "passed") {
                     test.icon = "fa-check";
@@ -18,6 +19,10 @@
                     build: $tc.data("build"),
                     test: test
                 }));
+
+                if (test.testReport && test.testReport.reportType && test.testReport.report) {
+                    TestHub.applyReportHandler_after(test.testReport.reportType, domElement, test.testReport.report);
+                }
             });
         });
     </script>

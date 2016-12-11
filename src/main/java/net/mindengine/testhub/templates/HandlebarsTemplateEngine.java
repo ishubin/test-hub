@@ -47,9 +47,13 @@ public class HandlebarsTemplateEngine extends TemplateEngine {
             }
         });
 
-        handlebars.registerHelper("nlToBr", (var, options) -> "---");
-        handlebars.registerHelper("renderTestReport", (var, options) -> "---");
-        handlebars.registerHelper("renderByTemplate", (var, options) -> "---");
+        /* Registering empty helpers due to a bug in handlebars-java
+         which needs helpers double for javascript precompiled templates
+         */
+        handlebars.registerHelper("nlToBr", (var, options) -> "");
+        handlebars.registerHelper("renderTestReport", (var, options) -> "");
+        handlebars.registerHelper("renderByTemplate", (var, options) -> "");
+        handlebars.registerHelper("ifOneOf", (var, options) -> "");
     }
 
     public String render(ModelAndView modelAndView) {

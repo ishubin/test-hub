@@ -62,3 +62,17 @@ Handlebars.registerHelper("renderByTemplate", function (data, templateName) {
         return "Unknown template: " + templateName;
     }
 });
+Handlebars.registerHelper("ifOneOf", function (conditionalA, conditionalB, options) {
+    if (conditionalA || conditionalB) {
+        options.fn(this);
+    }
+});
+
+var TestHub = {
+    reportHandlers: {},
+    applyReportHandler_after: function (type, element, report) {
+        if (this.reportHandlers.hasOwnProperty(type) && this.reportHandlers[type].hasOwnProperty("afterRender")) {
+            this.reportHandlers[type].afterRender(element, report);
+        }
+    }
+};

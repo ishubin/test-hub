@@ -1,17 +1,20 @@
 <div class="report-json-node-container">
-    <div class="report-json-node-title report-json-node-status-{{status}}">
-        <span class="report-json-node-status-label">{{status}}</span>
+    <div class="report-json-node-title report-json-node-status-{{#if status}}{{status}}{{else}}info{{/if}}">
         <span class="report-json-node-date">{{time}}</span>
+        <a href="#" class="report-json-node-expand">
+            <span class="report-json-node-expand-icon"></span>
+            <span class="report-json-node-status-label">{{#if status}}{{status}}{{else}}info{{/if}}</span>
+        </a>
         <span class="report-json-node-title">{{name}}</span>
     </div>
     <div class="report-json-node-children-container">
         {{#if details}}
             <div class="report-json-node-details">{{details}}</div>
         {{/if}}
-        <div class="report-json-node-children">
+        <ul class="report-json report-json-node-children">
             {{#each nodes}}
-                {{renderByTemplate this 'test-reports/report-json-node'}}
+                <li>{{renderByTemplate this 'test-reports/report-json-node'}}</li>
             {{/each}}
-        </div>
+        </ul>
     </div>
 </div>

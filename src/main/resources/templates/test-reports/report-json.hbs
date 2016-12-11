@@ -1,3 +1,6 @@
-{{#each report/nodes}}
-    {{renderByTemplate this 'test-reports/report-json-node'}}
-{{/each}}
+<ul class="report-json">
+    {{#each report/nodes}}
+        <li>{{renderByTemplate this 'test-reports/report-json-node'}}</li>
+    {{/each}}
+</ul>
+
