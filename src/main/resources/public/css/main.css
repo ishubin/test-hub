@@ -184,6 +184,12 @@ ul.report-json {
     margin: 0;
     padding-left: 10px;
 }
+ul.report-json > li {
+    margin-bottom: 5px;
+}
+.test-report > ul.report-json {
+    margin-left: 55px;
+}
 
 .report-json-node-children-container {
     /*display: none;*/
@@ -192,6 +198,13 @@ ul.report-json {
     border-left: 1px dashed #eee;
 }
 
+.report-json-node-date {
+    position: absolute;
+    padding: 4px;
+    color: #444444;
+    font-size: 0.8em;
+    left: 20px;
+}
 .report-json-node-expand {
     position: relative;
     display: inline-block;
@@ -202,6 +215,25 @@ ul.report-json {
     font-size: 0.8em;
     margin-left: 25px;
 }
+
+.report-json-node-expand:before {
+    display: block;
+    position: absolute;
+    left: -20px;
+    top: 3px;
+    font-size: 1.2em;
+    content: " ";
+    color: #777;
+    background: #fff;
+    width: 16px;
+    height: 14px;
+    padding-top: 0px;
+    padding-bottom: 3px;
+    text-align: center;
+    border: 1px solid #f0f0f0;
+    border-radius: 20px;
+}
+
 .report-json-node-status-info > .report-json-node-expand {
     background: #f0f0f0;
     color: #555;

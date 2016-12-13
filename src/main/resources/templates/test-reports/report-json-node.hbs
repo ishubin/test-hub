@@ -1,8 +1,7 @@
 <div class="report-json-node-container">
     <div class="report-json-node-title report-json-node-status-{{#if status}}{{status}}{{else}}info{{/if}}">
-        <span class="report-json-node-date">{{time}}</span>
+        <span class="report-json-node-date">{{formatOnlyTime time}}</span>
         <a href="#" class="report-json-node-expand">
-            <span class="report-json-node-expand-icon"></span>
             <span class="report-json-node-status-label">{{#if status}}{{status}}{{else}}info{{/if}}</span>
         </a>
         <span class="report-json-node-title">{{name}}</span>

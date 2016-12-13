@@ -67,6 +67,14 @@ Handlebars.registerHelper("ifOneOf", function (conditionalA, conditionalB, optio
         options.fn(this);
     }
 });
+Handlebars.registerHelper("formatOnlyTime", function (timeText) {
+    if (isNaN(timeText)) {
+        return timeText;
+    } else {
+        var date = new Date(timeText);
+        return date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+    }
+});
 
 var TestHub = {
     reportHandlers: {},

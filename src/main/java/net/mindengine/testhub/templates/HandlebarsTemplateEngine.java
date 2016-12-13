@@ -54,6 +54,7 @@ public class HandlebarsTemplateEngine extends TemplateEngine {
         handlebars.registerHelper("renderTestReport", (var, options) -> "");
         handlebars.registerHelper("renderByTemplate", (var, options) -> "");
         handlebars.registerHelper("ifOneOf", (var, options) -> "");
+        handlebars.registerHelper("formatOnlyTime", (var, options) -> "");
     }
 
     public String render(ModelAndView modelAndView) {
