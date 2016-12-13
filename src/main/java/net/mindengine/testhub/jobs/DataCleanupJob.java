@@ -17,11 +17,11 @@ package net.mindengine.testhub.jobs;
 
 import net.mindengine.testhub.services.JobsService;
 
-import java.util.Date;
 
 public class DataCleanupJob implements Runnable {
     private final JobsService jobsService;
-    private final long cleanupPeriod = 10 * 24 * 3600 * 1000;
+
+    private final int keepBuilds = 10;
 
     public DataCleanupJob(JobsService jobsService) {
         this.jobsService = jobsService;
@@ -30,8 +30,7 @@ public class DataCleanupJob implements Runnable {
     @Override
     public void run() {
         try {
-            Date cleanupDate = new Date(new Date().getTime() - cleanupPeriod);
-            jobsService.removeBuildsOlderThan(cleanupDate);
+            jobsService.removeBuilds(keepBuilds);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

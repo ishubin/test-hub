@@ -18,7 +18,6 @@ package net.mindengine.testhub.services;
 import net.mindengine.testhub.model.builds.BuildResponse;
 import net.mindengine.testhub.model.jobs.JobResponse;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,5 +31,5 @@ public interface JobsService {
 
     BuildResponse findBuild(String project, String jobName, String buildName);
 
-    void removeBuildsOlderThan(Date cleanupDate);
+    void removeBuilds(int keepBuilds);
 }

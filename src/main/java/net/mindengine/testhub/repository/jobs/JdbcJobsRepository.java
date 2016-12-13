@@ -118,8 +118,13 @@ public class JdbcJobsRepository extends JdbcRepository implements JobsRepository
     }
 
     @Override
-    public void removeBuildsOlderThan(Date cleanupDate) {
-        update("delete from builds where created_date < ?", cleanupDate);
+    public void removeBuilds(int keepBuilds) {
+        query("select max(build_id) from builds").singleLong().ifPresent(maxBuildId -> {
+            long untilBuild = maxBuildId - keepBuilds;
+            if (untilBuild > 0) {
+                update("delete from builds where build_id < ?", maxBuildId - keepBuilds);
+            }
+        });
     }
 
 }
